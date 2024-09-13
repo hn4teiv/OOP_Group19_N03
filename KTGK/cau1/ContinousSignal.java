@@ -8,17 +8,17 @@ public class ContinuousSignal implements Signal {
         this.frequency = frequency;
     }
 
-    @Override
+
     public double getAmplitude() {
         return amplitude;
     }
 
-    @Override
+
     public double getFrequency() {
         return frequency;
     }
 
-    @Override
+
     public double getPeriod() {
         // Tính chu kỳ dựa trên tần số
         if (frequency != 0) {
