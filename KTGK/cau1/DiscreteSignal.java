@@ -8,7 +8,7 @@ public class DiscreteSignal implements Signal {
         this.samplingInterval = samplingInterval;
     }
 
-    @Override
+
     public double getAmplitude() {
         double maxAmplitude = Double.NEGATIVE_INFINITY;
         for (double sample : samples) {
@@ -19,14 +19,14 @@ public class DiscreteSignal implements Signal {
         return maxAmplitude;
     }
 
-    @Override
+
     public double getFrequency() {
         // Tính tần số dựa trên số mẫu và khoảng thời gian lấy mẫu
         // Giả sử tín hiệu là một chuỗi mẫu liên tục, và khoảng thời gian lấy mẫu là đồng đều
         return 1.0 / (samples.length * samplingInterval);
     }
 
-    @Override
+
     public double getPeriod() {
         return 1.0 / getFrequency(); // Tính chu kỳ dựa trên tần số
     }
