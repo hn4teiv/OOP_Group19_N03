@@ -24,5 +24,29 @@ public class App {
         // Create and use NameNumber
         NameNumber nameNumber = new NameNumber("Alice", 42);
         System.out.println(nameNumber);
+
+        // Create and use DisruptLecture
+        DisruptLecture disruptLecture = new DisruptLecture();
+        disruptLecture.displayMessage();
+
+        // Create and use TestArithmetic
+        TestArithmetic testArithmetic = new TestArithmetic();
+        int sum = testArithmetic.add(5, 3);
+        int difference = testArithmetic.subtract(5, 3);
+        int product = testArithmetic.multiply(5, 3);
+        double quotient = testArithmetic.divide(5, 3);
+
+        System.out.println("Sum: " + sum);
+        System.out.println("Difference: " + difference);
+        System.out.println("Product: " + product);
+        System.out.println("Quotient: " + quotient);
+
+        // Create and use GlyphTest
+        GlyphTest glyphTest = new GlyphTest();
+        glyphTest.printGlyph();
+
+        // Create and use Transmogrify
+        Transmogrify transmogrify = new Transmogrify();
+        transmogrify.performTransformation();
     }
 }
