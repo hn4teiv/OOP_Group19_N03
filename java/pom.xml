@@ -12,7 +12,7 @@
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <javafx.version>21.0.4</javafx.version> <!-- Sử dụng phiên bản JavaFX 21.0.4 -->
-        <exec.mainClass>com.mycompany.managelibrary.Java</exec.mainClass> <!-- Lớp main của bạn -->
+        <exec.mainClass>com.mycompany.managelibrary.view.LoginView</exec.mainClass> <!-- Lớp main của bạn -->
     </properties>
 
     <dependencies>
@@ -33,6 +33,17 @@
             <version>${javafx.version}</version>
             <classifier>mac</classifier> <!-- Sử dụng win, mac, hoặc linux tùy thuộc vào hệ điều hành -->
         </dependency>
+        <dependency>
+    <groupId>jakarta.xml.bind</groupId>
+    <artifactId>jakarta.xml.bind-api</artifactId>
+    <version>2.3.3</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-runtime</artifactId>
+    <version>2.3.3</version>
+</dependency>
+        
     </dependencies>
 
     <build>
@@ -61,7 +72,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>${exec.mainClass}</mainClass> <!-- Lớp main của bạn -->
+                    <mainClass>com.mycompany.managelibrary.view.LoginView</mainClass> <!-- Lớp main của bạn -->
                 </configuration>
             </plugin>
         </plugins>

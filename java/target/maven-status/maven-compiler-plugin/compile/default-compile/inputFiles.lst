@@ -1,1 +1,14 @@
-/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/Java.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/entity/LoanReturn.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/dao/UserDao.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/dao/LoanReturnDao.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/entity/LoanReturnXML.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/view/LoginView.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/controller/LoanReturnController.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/controller/LoginController.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/entity/User.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/dao/BookDao.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/controller/BookController.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/view/BookView.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/view/LoanReturnView.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/entity/Book.java
+/Users/vuvietanh/OOP_Group19_N03/java/src/main/java/com/mycompany/managelibrary/entity/BookXML.java

@@ -1,7 +1,8 @@
 package com.mycompany.managelibrary.dao;
- 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mycompany.managelibrary.entity.LoanReturn;
 
 public class LoanReturnDao {
     private static final String FILE_PATH = "loanreturn.xml";
