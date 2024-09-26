@@ -19,7 +19,6 @@ public class LoginController {
     }
 
     public void showBookView() {
-        // Code to show the book view
     }
 
     class LoginListener implements ActionListener {

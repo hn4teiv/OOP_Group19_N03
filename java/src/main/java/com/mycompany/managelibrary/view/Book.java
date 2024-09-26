@@ -48,7 +48,22 @@ public class Book {
     public void setLoaiBook(String loaiBook) {
         this.loaiBook = loaiBook;
     }
+uatBan() {
+        return nhaXuatBan;
+    }
 
+    public void setNhaXuatBan(String nhaXuatBan) {
+        this.nhaXuatBan = nhaXuatBan;
+    }
+
+    public String getTacGia() {
+        return tacGia;
+    }
+
+    public void setTacGia(String tacGia) {
+        this.tacGia = tacGia;
+    }
+}
     public double getGiaThanh() {
         return giaThanh;
     }
@@ -73,19 +88,4 @@ public class Book {
         this.maSo = maSo;
     }
 
-    public String getNhaXuatBan() {
-        return nhaXuatBan;
-    }
-
-    public void setNhaXuatBan(String nhaXuatBan) {
-        this.nhaXuatBan = nhaXuatBan;
-    }
-
-    public String getTacGia() {
-        return tacGia;
-    }
-
-    public void setTacGia(String tacGia) {
-        this.tacGia = tacGia;
-    }
-}
+    public String getNhaX
