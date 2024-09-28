@@ -1,54 +1,76 @@
 package com.mycompany.managelibrary.entity;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "book")
 public class Book {
-    private int ID;
-    private String tenSach;
-    private double giaTien;
-    private String soLuong;
+    private int id;
+    private String tenBook;
+    private String loaiBook;
+    private double giaThanh;
+    private int soLuong;
+    private String maSo;
     private String nhaXuatBan;
     private String tacGia;
 
-    public Book(int ID, String tenSach, double giaTien, String soLuong, String nhaXuatBan, String tacGia) {
-        this.ID = ID;
-        this.tenSach = tenSach;
-        this.giaTien = giaTien;
-        this.soLuong = soLuong;
-        this.nhaXuatBan = nhaXuatBan;
-        this.tacGia = tacGia;
+    // Getters và Setters
+
+    @XmlElement
+    public int getId() {
+        return id;
     }
 
-    public int getID() {
-        return ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    @XmlElement
+    public String getTenBook() {
+        return tenBook;
     }
 
-    public String getTenSach() {
-        return tenSach;
+    public void setTenBook(String tenBook) {
+        this.tenBook = tenBook;
     }
 
-    public void setTenSach(String tenSach) {
-        this.tenSach = tenSach;
+    @XmlElement
+    public String getLoaiBook() {
+        return loaiBook;
     }
 
-    public double getGiaTien() {
-        return giaTien;
+    public void setLoaiBook(String loaiBook) {
+        this.loaiBook = loaiBook;
     }
 
-    public void setGiaTien(double giaTien) {
-        this.giaTien = giaTien;
+    @XmlElement
+    public double getGiaThanh() {
+        return giaThanh;
     }
 
-    public String getSoLuong() {
+    public void setGiaThanh(double giaThanh) {
+        this.giaThanh = giaThanh;
+    }
+
+    @XmlElement
+    public int getSoLuong() {
         return soLuong;
     }
 
-    public void setSoLuong(String soLuong) {
+    public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
     }
 
+    @XmlElement
+    public String getMaSo() {
+        return maSo;
+    }
+
+    public void setMaSo(String maSo) {
+        this.maSo = maSo;
+    }
+
+    @XmlElement
     public String getNhaXuatBan() {
         return nhaXuatBan;
     }
@@ -57,6 +79,7 @@ public class Book {
         this.nhaXuatBan = nhaXuatBan;
     }
 
+    @XmlElement
     public String getTacGia() {
         return tacGia;
     }

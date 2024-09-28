@@ -1,7 +1,8 @@
 package com.mycompany.managelibrary.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.mycompany.managelibrary.dao.LoanReturnDao;
+import com.mycompany.managelibrary.view.BookView;
+import com.mycompany.managelibrary.view.LoanReturnView;
 
 public class LoanReturnController {
     private LoanReturnDao loanReturnDao;
@@ -11,14 +12,14 @@ public class LoanReturnController {
     public LoanReturnController(LoanReturnView loanReturnView, BookView bookView) {
         this.loanReturnView = loanReturnView;
         this.bookView = bookView;
-        loanReturnView.addLoanReturnListener(new AddLoanReturnListener());
-    }
 
-    class AddLoanReturnListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-        }
-    }
-
-    public void showLoanReturnView() {
+        // Thêm lắng nghe cho nút thêm
+        loanReturnView.addLoanReturnListener(new LoanReturnView.AddLoanReturnListener() {
+            @Override
+            public void onAddLoanReturn() {
+                // Logic để thêm LoanReturn vào cơ sở dữ liệu hoặc danh sách
+                System.out.println("Loan return added");
+            }
+        });
     }
 }
