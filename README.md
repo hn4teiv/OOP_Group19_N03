@@ -27,6 +27,6 @@ Dự án này hướng đến việc phát triển một giải pháp toàn di�
 
 ## UML Dự án 
 
-![LoginView](UML Component Diagram.jpg)
+![LoginView](image/UML%20Component%20Diagram.jpg)
 
 ![LoginView](anh.png)
