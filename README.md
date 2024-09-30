@@ -27,15 +27,15 @@ Dự án này hướng đến việc phát triển một giải pháp toàn di�
 
 ## UML Dự án 
 
-#1.1 UML Component Diagram
+# 1.1 UML Component Diagram
 ![LoginView](image/UML%20Component%20Diagram.jpg)
 
-#1.2 UML Sequence Diagram
-#1.2.1
+# 1.2 UML Sequence Diagram
+# 1.2.1
 ![LoginView](image/h1.jpg)
 
-#1.2.2
+# 1.2.2
 ![LoginView](image/h2.jpg)
 
-#Giao diện đầu tiên của dự án
+# Giao diện đầu tiên của dự án
 ![LoginView](anh.png)
