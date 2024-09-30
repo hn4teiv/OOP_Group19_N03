@@ -25,6 +25,8 @@ Mục tiêu chính của dự án là:
 
 Dự án này hướng đến việc phát triển một giải pháp toàn diện cho các thư viện, từ thư viện trường học đến thư viện công cộng.
 
+## UML Dự án 
 
+![LoginView](UML Component Diagram.jpg)
 
 ![LoginView](anh.png)
