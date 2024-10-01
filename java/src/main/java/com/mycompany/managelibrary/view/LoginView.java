@@ -13,7 +13,7 @@ public class LoginView extends JFrame {
     private JButton registerButton;
 
     private UserDao userDao;
-    private LoginListener loginListener; // Khai báo biến loginListener
+    private LoginListener loginListener;
 
     public LoginView() {
         setTitle("Đăng Nhập");
@@ -43,58 +43,84 @@ public class LoginView extends JFrame {
 
         add(panel);
 
+        // Xử lý sự kiện hủy bỏ đăng nhập
         cancelButton.addActionListener(e -> System.exit(0));
 
+        // Xử lý sự kiện khi bấm nút đăng nhập
         loginButton.addActionListener(e -> {
             if (loginListener != null) {
-                loginListener.onLogin(); // Gọi phương thức onLogin nếu loginListener không null
+                try {
+                    loginListener.onLogin(); // Gọi phương thức onLogin nếu loginListener không null
+                } catch (Exception ex) {
+                    showError("Đã xảy ra lỗi khi đăng nhập: " + ex.getMessage());
+                }
             }
         });
 
+        // Xử lý sự kiện khi bấm nút đăng ký
         registerButton.addActionListener(e -> {
-            User user = getUser();
-            if (userDao.registerUser(user)) {
-                showMessage("Đăng ký thành công! Bạn có thể đăng nhập.");
-            } else {
-                showMessage("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+            try {
+                User user = getUser();
+                if (userDao.registerUser(user)) {
+                    showMessage("Đăng ký thành công! Bạn có thể đăng nhập.");
+                } else {
+                    showMessage("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+                }
+            } catch (Exception ex) {
+                showError("Đã xảy ra lỗi khi đăng ký: " + ex.getMessage());
             }
         });
     }
 
+    // Lấy thông tin người dùng nhập
     public User getUser() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
         return new User(username, password);
     }
 
+    // Hiển thị thông báo cho người dùng
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
 
+    // Hiển thị thông báo lỗi cho người dùng
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // Thêm listener để xử lý đăng nhập
     public void addLoginListener(LoginListener listener) {
-        this.loginListener = listener; // Gán loginListener
+        this.loginListener = listener;
     }
 
     public static void main(String[] args) {
         LoginView loginView = new LoginView();
 
+        // Gắn listener xử lý đăng nhập
         loginView.addLoginListener(() -> {
-            User user = loginView.getUser();
-            UserDao userDao = new UserDao();
-            if (userDao.checkUser(user)) {
-                loginView.showMessage("Đăng nhập thành công!");
-                // Mở BookView khi đăng nhập thành công
-                BookView bookView = new BookView();
-                bookView.setVisible(true);
-                loginView.dispose(); // Đóng cửa sổ đăng nhập
-            } else {
-                loginView.showMessage("Đăng nhập thất bại!");
+            try {
+                User user = loginView.getUser();
+                UserDao userDao = new UserDao();
+                if (userDao.checkUser(user)) {
+                    loginView.showMessage("Đăng nhập thành công!");
+
+                    // Mở BookView khi đăng nhập thành công
+                    BookView bookView = new BookView();
+                    bookView.setVisible(true);
+                    loginView.dispose(); // Đóng cửa sổ đăng nhập
+                } else {
+                    loginView.showMessage("Đăng nhập thất bại!");
+                }
+            } catch (Exception ex) {
+                loginView.showError("Đã xảy ra lỗi khi đăng nhập: " + ex.getMessage());
             }
         });
 
         SwingUtilities.invokeLater(() -> loginView.setVisible(true));
     }
 
+    // Interface để đăng ký listener đăng nhập
     public interface LoginListener {
         void onLogin();
     }
