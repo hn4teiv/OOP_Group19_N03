@@ -3,48 +3,55 @@ package com.mycompany.managelibrary.controller;
 import com.mycompany.managelibrary.entity.User;
 import com.mycompany.managelibrary.dao.UserDao;
 import com.mycompany.managelibrary.view.BookView;
-import com.mycompany.managelibrary.view.LoanReturnView;
 import com.mycompany.managelibrary.view.LoginView;
-import javax.swing.JOptionPane;
+import javafx.stage.Stage;
 
 public class LoginController {
     private UserDao userDao;
     private LoginView loginView;
-    private BookView bookView;
-    private LoanReturnView loanReturnView;
+    private Stage stage;
 
-    public LoginController(LoginView view) {
+    // Constructor nhận cả LoginView và Stage
+    public LoginController(LoginView view, Stage stage) {
         this.loginView = view;
+        this.stage = stage;
         this.userDao = new UserDao();
-        this.bookView = new BookView();
-        this.loanReturnView = new LoanReturnView();
 
-        loginView.addLoginListener(new LoginListener());
+        // Đăng ký sự kiện đăng nhập từ view
+        loginView.addLoginListener(this);
     }
 
+    // Hàm hiển thị giao diện sách khi đăng nhập thành công
     public void showBookView() {
         try {
-            bookView.setVisible(true); // Hiển thị giao diện sách
-            loginView.dispose(); // Đóng giao diện đăng nhập
+            // Tạo và mở giao diện BookView
+            BookView bookView = new BookView();
+            Stage bookStage = new Stage();
+            bookView.start(bookStage); // Mở giao diện sách trong một Stage mới
+
+            // Đóng cửa sổ đăng nhập hiện tại
+            stage.close();
         } catch (Exception e) {
-            // Thông báo lỗi khi không thể hiển thị giao diện sách
-            JOptionPane.showMessageDialog(null, "Lỗi khi mở giao diện sách: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            loginView.showMessage("Lỗi khi mở giao diện sách: " + e.getMessage());
         }
     }
 
-    class LoginListener implements LoginView.LoginListener {
-        public void onLogin() {
-            try {
-                User user = loginView.getUser();
-                if (userDao.checkUser(user)) {
-                    showBookView();
-                } else {
-                    loginView.showMessage("Tên đăng nhập hoặc mật khẩu không chính xác!");
-                }
-            } catch (Exception e) {
-                // Thông báo lỗi khi có vấn đề trong quá trình đăng nhập
-                JOptionPane.showMessageDialog(null, "Lỗi khi đăng nhập: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    // Hàm xử lý đăng nhập
+    public void handleLogin() {
+        try {
+            // Lấy thông tin người dùng từ giao diện đăng nhập
+            User user = loginView.getUser();
+
+            // Kiểm tra thông tin đăng nhập từ UserDao
+            if (userDao.checkUser(user)) {
+                showBookView(); // Nếu đăng nhập thành công, mở BookView
+            } else {
+                // Nếu đăng nhập không thành công, thông báo lỗi
+                loginView.showMessage("Tên đăng nhập hoặc mật khẩu không chính xác!");
             }
+        } catch (Exception e) {
+            // Hiển thị thông báo lỗi khi gặp sự cố đăng nhập
+            loginView.showMessage("Lỗi khi đăng nhập: " + e.getMessage());
         }
     }
 }

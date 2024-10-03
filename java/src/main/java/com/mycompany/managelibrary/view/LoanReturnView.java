@@ -1,168 +1,172 @@
 package com.mycompany.managelibrary.view;
 
+import java.util.List;
+
 import com.mycompany.managelibrary.entity.LoanReturn;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class LoanReturnView extends JFrame {
-    private JTable table;
-    private DefaultTableModel tableModel;
-    private JTextField idField;
-    private JTextField diaChiField;
-    private JTextField tenSachField;
-    private JTextField lopField;
-    private JTextField trangThaiField;
-    private JButton addButton;
-    private JButton editButton;
-    private JButton deleteButton;
+public class LoanReturnView {
+    private Stage loanReturnStage;
+    private GridPane layout;
+    private VBox buttonLayout;
 
-    private ArrayList<LoanReturn> loanReturnList;
+    // Các thành phần của giao diện
+    private Label idLabel;
+    private TextField idField;
+    private Label diaChiLabel;
+    private TextField diaChiField;
+    private Label tenLabel;
+    private TextField tenField;
+    private Label lopLabel;
+    private TextField lopField;
+    private Label tenSachLabel;
+    private TextField tenSachField;
+    private Label trangThaiLabel;
+    private TextField trangThaiField;
+
+    private Button addButton;
+    private Button editButton;
+    private Button deleteButton;
+    private Button searchButton;
+    private Button switchToBookButton;
+
+    // Thêm phần hiển thị danh sách LoanReturn
+    private ListView<String> loanReturnListView;
 
     public LoanReturnView() {
-        setTitle("Loan Return Management");
-        setSize(800, 400);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        // Khởi tạo các thành phần giao diện
+        layout = new GridPane();
+        buttonLayout = new VBox(10);
 
-        loanReturnList = new ArrayList<>();
+        idLabel = new Label("ID:");
+        idField = new TextField();
+        diaChiLabel = new Label("Địa chỉ:");
+        diaChiField = new TextField();
+        tenLabel = new Label("Tên:");
+        tenField = new TextField();
+        lopLabel = new Label("Lớp:");
+        lopField = new TextField();
+        tenSachLabel = new Label("Tên sách:");
+        tenSachField = new TextField();
+        trangThaiLabel = new Label("Trạng thái:");
+        trangThaiField = new TextField();
 
-        // Tạo bảng và mô hình bảng
-        tableModel = new DefaultTableModel(new String[]{"ID", "Address", "Book Title", "Class", "Status"}, 0);
-        table = new JTable(tableModel);
+        addButton = new Button("Thêm");
+        editButton = new Button("Cập nhật");
+        deleteButton = new Button("Xóa");
+        searchButton = new Button("Tìm kiếm");
+        switchToBookButton = new Button("Chuyển sang Quản lý Sách");
 
-        // Tạo các trường nhập liệu
-        idField = new JTextField(15);
-        diaChiField = new JTextField(15);
-        tenSachField = new JTextField(15);
-        lopField = new JTextField(15);
-        trangThaiField = new JTextField(15);
+        // Danh sách LoanReturn
+        loanReturnListView = new ListView<>();
+        ObservableList<String> loanReturnItems = FXCollections.observableArrayList();
+        loanReturnListView.setItems(loanReturnItems);
 
-        addButton = new JButton("Add LoanReturn");
-        editButton = new JButton("Edit LoanReturn");
-        deleteButton = new JButton("Delete LoanReturn");
+        // Cấu hình layout
+        layout.add(idLabel, 0, 0);
+        layout.add(idField, 1, 0);
+        layout.add(diaChiLabel, 0, 1);
+        layout.add(diaChiField, 1, 1);
+        layout.add(tenLabel, 0, 2);
+        layout.add(tenField, 1, 2);
+        layout.add(lopLabel, 0, 3);
+        layout.add(lopField, 1, 3);
+        layout.add(tenSachLabel, 0, 4);
+        layout.add(tenSachField, 1, 4);
+        layout.add(trangThaiLabel, 0, 5);
+        layout.add(trangThaiField, 1, 5);
 
-        // Thiết lập bố trí giao diện
-        JPanel formPanel = new JPanel(new GridLayout(6, 2));
-        formPanel.add(new JLabel("ID:"));
-        formPanel.add(idField);
-        formPanel.add(new JLabel("Address:"));
-        formPanel.add(diaChiField);
-        formPanel.add(new JLabel("Book Title:"));
-        formPanel.add(tenSachField);
-        formPanel.add(new JLabel("Class:"));
-        formPanel.add(lopField);
-        formPanel.add(new JLabel("Status:"));
-        formPanel.add(trangThaiField);
+        buttonLayout.getChildren().addAll(addButton, editButton, deleteButton, searchButton, switchToBookButton);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addButton);
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
+        layout.add(buttonLayout, 0, 6, 2, 1);
+        layout.add(loanReturnListView, 0, 7, 2, 1);
 
-        // Thêm bảng và các thành phần khác vào cửa sổ
-        add(new JScrollPane(table), BorderLayout.CENTER);
-        add(formPanel, BorderLayout.SOUTH);
-        add(buttonPanel, BorderLayout.NORTH);
-
-        // Thêm sự kiện cho các nút
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addLoanReturn();
-            }
-        });
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editLoanReturn();
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteLoanReturn();
-            }
-        });
+        loanReturnStage = new Stage();
+        loanReturnStage.setTitle("Quản lý Mượn Trả");
     }
 
-    private void addLoanReturn() {
-        LoanReturn loanReturn = new LoanReturn(
-                Integer.parseInt(idField.getText()),
-                diaChiField.getText(),
-                tenSachField.getText(),
-                lopField.getText(),
-                trangThaiField.getText()
-        );
-        loanReturnList.add(loanReturn);
-        tableModel.addRow(new Object[]{
-                loanReturn.getId(),
-                loanReturn.getDiaChi(),
-                loanReturn.getTenSach(),
-                loanReturn.getLop(),
-                loanReturn.getTrangThai()
-        });
-        clearForm();
+    // Hàm để hiển thị LoanReturnView
+    public GridPane getView() {
+        return layout;  // Trả về layout thay vì Scene
     }
 
-    private void editLoanReturn() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            LoanReturn selectedLoanReturn = loanReturnList.get(selectedRow);
+    // Phương thức để hiển thị danh sách mượn trả
+    public void showListLoanReturn(List<LoanReturn> loanReturnList) {
+        ObservableList<String> loanReturnItems = FXCollections.observableArrayList();
+        for (LoanReturn loanReturn : loanReturnList) {
+            loanReturnItems.add("ID: " + loanReturn.getId() + " - " + loanReturn.getTen() + " - " + loanReturn.getTrangThai());
+        }
+        loanReturnListView.setItems(loanReturnItems);
+    }
 
-            selectedLoanReturn.setDiaChi(diaChiField.getText());
-            selectedLoanReturn.setTenSach(tenSachField.getText());
-            selectedLoanReturn.setLop(lopField.getText());
-            selectedLoanReturn.setTrangThai(trangThaiField.getText());
+    // Lấy thông tin mượn trả từ các trường
+    public LoanReturn getLoanReturnInfo() {
+        try {
+            int id = Integer.parseInt(idField.getText());
+            String diaChi = diaChiField.getText();
+            String ten = tenField.getText();
+            String lop = lopField.getText();
+            String tenSach = tenSachField.getText();
+            String trangThai = trangThaiField.getText();
 
-            tableModel.setValueAt(selectedLoanReturn.getDiaChi(), selectedRow, 1);
-            tableModel.setValueAt(selectedLoanReturn.getTenSach(), selectedRow, 2);
-            tableModel.setValueAt(selectedLoanReturn.getLop(), selectedRow, 3);
-            tableModel.setValueAt(selectedLoanReturn.getTrangThai(), selectedRow, 4);
-            clearForm();
+            return new LoanReturn(id, diaChi, ten, lop, tenSach, trangThai);
+        } catch (NumberFormatException e) {
+            return null; // Trả về null nếu thông tin nhập vào không hợp lệ
         }
     }
 
-    private void deleteLoanReturn() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            loanReturnList.remove(selectedRow);
-            tableModel.removeRow(selectedRow);
-            clearForm();
-        }
+    // Hiển thị thông báo
+    public void showMessage(String message) {
+        // Cách đơn giản hiển thị thông báo (chưa có mã chi tiết)
+        System.out.println(message);
     }
 
-    private void clearForm() {
-        idField.setText("");
-        diaChiField.setText("");
-        tenSachField.setText("");
-        lopField.setText("");
-        trangThaiField.setText("");
+    // Thêm listener cho các button
+    public void addAddLoanReturnListener(EventHandler<ActionEvent> listener) {
+        addButton.setOnAction(listener);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            LoanReturnView loanReturnView = new LoanReturnView();
-            loanReturnView.setVisible(true);
-        });
-    }
-    public void addLoanReturnListener(AddLoanReturnListener listener) {
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                listener.onAddLoanReturn();
-            }
-        });
+    public void addEditLoanReturnListener(EventHandler<ActionEvent> listener) {
+        editButton.setOnAction(listener);
     }
 
-    public interface AddLoanReturnListener {
-        void onAddLoanReturn();
+    public void addDeleteLoanReturnListener(EventHandler<ActionEvent> listener) {
+        deleteButton.setOnAction(listener);
     }
 
+    public void addSearchListener(EventHandler<ActionEvent> listener) {
+        searchButton.setOnAction(listener);
+    }
+
+    public void addSwitchToBookViewListener(EventHandler<ActionEvent> listener) {
+        switchToBookButton.setOnAction(listener);
+    }
+
+    // Reset form và thông tin
+    public void clearLoanReturnInfo() {
+        idField.clear();
+        diaChiField.clear();
+        tenField.clear();
+        lopField.clear();
+        tenSachField.clear();
+        trangThaiField.clear();
+    }
+
+    public void resetButtons() {
+        addButton.setDisable(false);
+        editButton.setDisable(false);
+        deleteButton.setDisable(false);
+        searchButton.setDisable(false);
+    }
 }

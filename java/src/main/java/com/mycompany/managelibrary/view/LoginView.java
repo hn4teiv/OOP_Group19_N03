@@ -1,127 +1,104 @@
 package com.mycompany.managelibrary.view;
 
+import com.mycompany.managelibrary.controller.LoginController;
 import com.mycompany.managelibrary.dao.UserDao;
 import com.mycompany.managelibrary.entity.User;
-import javax.swing.*;
-import java.awt.*;
 
-public class LoginView extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton cancelButton;
-    private JButton registerButton;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-    private UserDao userDao;
-    private LoginListener loginListener;
+public class LoginView extends Application {
+    private TextField userNameField;
+    private PasswordField passwordField;
+    private VBox layout;
+    private Button loginBtn, registerBtn, cancelBtn;  // Thêm nút đăng ký và hủy
+    private UserDao userDao;  // Đối tượng UserDao để kiểm tra và lưu người dùng
 
-    public LoginView() {
-        setTitle("Đăng Nhập");
-        setSize(300, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+    @Override
+    public void start(Stage stage) {
+        // Khởi tạo các trường và nút đăng nhập, đăng ký, và hủy
+        this.userNameField = new TextField();
+        this.passwordField = new PasswordField();
+        this.loginBtn = new Button("Login");
+        this.registerBtn = new Button("Register");
+        this.cancelBtn = new Button("Cancel");
 
+        // Tạo đối tượng UserDao để thao tác với dữ liệu người dùng
         userDao = new UserDao();
 
-        JLabel usernameLabel = new JLabel("Tên đăng nhập:");
-        usernameField = new JTextField(15);
-        JLabel passwordLabel = new JLabel("Mật khẩu:");
-        passwordField = new JPasswordField(15);
-        loginButton = new JButton("Đăng Nhập");
-        cancelButton = new JButton("Hủy");
-        registerButton = new JButton("Đăng Ký");
+        // Tạo layout và các thành phần giao diện
+        Label userNameLabel = new Label("Username:");
+        Label passwordLabel = new Label("Password:");
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
-        panel.add(usernameLabel);
-        panel.add(usernameField);
-        panel.add(passwordLabel);
-        panel.add(passwordField);
-        panel.add(loginButton);
-        panel.add(registerButton);
-        panel.add(cancelButton);
+        // Layout
+        layout = new VBox(10, userNameLabel, userNameField, passwordLabel, passwordField, loginBtn, registerBtn, cancelBtn);
+        stage.setScene(new Scene(layout, 300, 250));
+        stage.setTitle("Login");
 
-        add(panel);
+        // Khởi tạo controller với LoginView và Stage
+        LoginController loginController = new LoginController(this, stage);
 
-        // Xử lý sự kiện hủy bỏ đăng nhập
-        cancelButton.addActionListener(e -> System.exit(0));
+        // Đăng ký sự kiện cho các nút
+        addLoginListener(loginController);
+        addRegisterListener();
+        addCancelListener(stage);
 
-        // Xử lý sự kiện khi bấm nút đăng nhập
-        loginButton.addActionListener(e -> {
-            if (loginListener != null) {
-                try {
-                    loginListener.onLogin(); // Gọi phương thức onLogin nếu loginListener không null
-                } catch (Exception ex) {
-                    showError("Đã xảy ra lỗi khi đăng nhập: " + ex.getMessage());
-                }
-            }
-        });
+        // Hiển thị cửa sổ đăng nhập
+        stage.show();
+    }
 
-        // Xử lý sự kiện khi bấm nút đăng ký
-        registerButton.addActionListener(e -> {
-            try {
-                User user = getUser();
-                if (userDao.registerUser(user)) {
-                    showMessage("Đăng ký thành công! Bạn có thể đăng nhập.");
-                } else {
-                    showMessage("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
-                }
-            } catch (Exception ex) {
-                showError("Đã xảy ra lỗi khi đăng ký: " + ex.getMessage());
+    // Thêm sự kiện cho nút đăng nhập
+    public void addLoginListener(LoginController controller) {
+        loginBtn.setOnAction(e -> controller.handleLogin());  // Gọi phương thức handleLogin từ LoginController
+    }
+
+    // Thêm sự kiện cho nút đăng ký
+    private void addRegisterListener() {
+        registerBtn.setOnAction(e -> {
+            User user = getUser();
+            if (userDao.registerUser(user)) {
+                showMessage("Đăng ký thành công!");
+                clearFields();
+            } else {
+                showMessage("Đăng ký thất bại! Tên đăng nhập đã tồn tại.");
             }
         });
     }
 
-    // Lấy thông tin người dùng nhập
-    public User getUser() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-        return new User(username, password);
+    // Thêm sự kiện cho nút hủy
+    private void addCancelListener(Stage stage) {
+        cancelBtn.setOnAction(e -> stage.close());  // Đóng ứng dụng
     }
 
-    // Hiển thị thông báo cho người dùng
+    // Phương thức hiển thị thông báo
     public void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message);
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Thông báo");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    // Hiển thị thông báo lỗi cho người dùng
-    public void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
+    // Lấy thông tin người dùng từ các trường nhập
+    public User getUser() {
+        return new User(userNameField.getText(), passwordField.getText());
     }
 
-    // Thêm listener để xử lý đăng nhập
-    public void addLoginListener(LoginListener listener) {
-        this.loginListener = listener;
+    // Xóa các trường nhập
+    public void clearFields() {
+        userNameField.clear();
+        passwordField.clear();
     }
 
     public static void main(String[] args) {
-        LoginView loginView = new LoginView();
-
-        // Gắn listener xử lý đăng nhập
-        loginView.addLoginListener(() -> {
-            try {
-                User user = loginView.getUser();
-                UserDao userDao = new UserDao();
-                if (userDao.checkUser(user)) {
-                    loginView.showMessage("Đăng nhập thành công!");
-
-                    // Mở BookView khi đăng nhập thành công
-                    BookView bookView = new BookView();
-                    bookView.setVisible(true);
-                    loginView.dispose(); // Đóng cửa sổ đăng nhập
-                } else {
-                    loginView.showMessage("Đăng nhập thất bại!");
-                }
-            } catch (Exception ex) {
-                loginView.showError("Đã xảy ra lỗi khi đăng nhập: " + ex.getMessage());
-            }
-        });
-
-        SwingUtilities.invokeLater(() -> loginView.setVisible(true));
-    }
-
-    // Interface để đăng ký listener đăng nhập
-    public interface LoginListener {
-        void onLogin();
+        launch(args);  // Chạy ứng dụng JavaFX
     }
 }

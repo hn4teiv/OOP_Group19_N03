@@ -1,0 +1,50 @@
+<LoanReturns>
+    <LoanReturn>
+        <Id>1</Id>
+        <Address>Hoàn Kiếm</Address>
+        <Name>Nguyên Văn B</Name>
+        <Class>CNTTVJ2</Class>
+        <BookTitle>Lý thuyết sắc xuất thống kê</BookTitle>
+        <Status>Chưa trả</Status>
+    </LoanReturn>
+    <LoanReturn>
+        <Id>2</Id>
+        <Address>Hà Đông</Address>
+        <Name>Nguyễn Văn A</Name>
+        <Class>CNTT2</Class>
+        <BookTitle>Cấu trúc dữ liệu và giải thuật</BookTitle>
+        <Status>Đã trả</Status>
+    </LoanReturn>
+    <LoanReturn>
+        <Id>3</Id>
+        <Address>Hoàng Mai</Address>
+        <Name>Nguyên Văn C</Name>
+        <Class>KHMT</Class>
+        <BookTitle>Nhập môn cơ sở dữ liệu</BookTitle>
+        <Status>Đã trả</Status>
+    </LoanReturn>
+    <LoanReturn>
+        <Id>4</Id>
+        <Address>Bắc Từ Liêm</Address>
+        <Name>Nguyễn Văn D</Name>
+        <Class>Dược 1</Class>
+        <BookTitle>Hóa vô cơ</BookTitle>
+        <Status>Chưa trả</Status>
+    </LoanReturn>
+    <LoanReturn>
+        <Id>5</Id>
+        <Address>Hoài Đức</Address>
+        <Name>Nguyễn Văn E</Name>
+        <Class>KTOT 2</Class>
+        <BookTitle>Vật lý 1</BookTitle>
+        <Status>Đã trả</Status>
+    </LoanReturn>
+    <LoanReturn>
+        <Id>6</Id>
+        <Address>Long Biên</Address>
+        <Name>Nguyễn Văn F</Name>
+        <Class>ĐTVT 1</Class>
+        <BookTitle>Giải tích 1</BookTitle>
+        <Status>Chưa trả</Status>
+    </LoanReturn>
+</LoanReturns>

@@ -11,37 +11,36 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <javafx.version>21.0.4</javafx.version> <!-- Sử dụng phiên bản JavaFX 21.0.4 -->
+        <javafx.version>23</javafx.version> <!-- Sử dụng phiên bản JavaFX 23 -->
         <exec.mainClass>com.mycompany.managelibrary.view.LoginView</exec.mainClass> <!-- Lớp main của bạn -->
     </properties>
 
     <dependencies>
+        <!-- Dependency cho JavaFX -->
         <dependency>
-            <groupId>com.mycompany.managelibrary</groupId>
-            <artifactId>java</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Dependency cho JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>2.3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.3.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.2</version>
+            <version>2.3.3</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <!-- Maven Compiler Plugin -->
@@ -52,6 +51,11 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <!-- Đảm bảo JAXB được biên dịch -->
+                        <arg>-classpath</arg>
+                        <arg>${project.build.directory}/classes</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -68,7 +72,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.mycompany.managelibrary.view.LoginView</mainClass> <!-- Lớp main của bạn -->
+                    <mainClass>com.mycompany.managelibrary.view.LoginView</mainClass>
                 </configuration>
             </plugin>
         </plugins>
