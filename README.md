@@ -39,3 +39,9 @@ Dự án này hướng đến việc phát triển một giải pháp toàn di�
 
 # Giao diện đầu tiên của dự án
 ![LoginView](anh.png)
+
+# Code chính
+![LoginView](image/Code.jpg)
+
+# Login 
+![LoginView](image/Login.jpg)
