@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="java" options="" />
+      <module name="java" options="-classpath $PROJECT_DIR$/java/target/classes" />
     </option>
   </component>
 </project>

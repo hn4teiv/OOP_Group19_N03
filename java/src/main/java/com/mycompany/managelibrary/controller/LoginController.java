@@ -5,6 +5,8 @@ import com.mycompany.managelibrary.dao.UserDao;
 import com.mycompany.managelibrary.view.BookView;
 import com.mycompany.managelibrary.view.LoginView;
 import javafx.stage.Stage;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class LoginController {
     private UserDao userDao;
@@ -44,6 +46,9 @@ public class LoginController {
 
             // Kiểm tra thông tin đăng nhập từ UserDao
             if (userDao.checkUser(user)) {
+                // Ghi thông tin đăng nhập vào tệp login.txt
+                writeLoginToFile(user.getUsername(), user.getPassword());
+
                 showBookView(); // Nếu đăng nhập thành công, mở BookView
             } else {
                 // Nếu đăng nhập không thành công, thông báo lỗi
@@ -52,6 +57,18 @@ public class LoginController {
         } catch (Exception e) {
             // Hiển thị thông báo lỗi khi gặp sự cố đăng nhập
             loginView.showMessage("Lỗi khi đăng nhập: " + e.getMessage());
+        }
+    }
+
+    // Hàm ghi thông tin đăng nhập vào tệp login.txt
+    private void writeLoginToFile(String username, String password) {
+        String filePath = "login.txt";  // Đảm bảo đường dẫn này đúng với thư mục repo của bạn
+
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            // Ghi thông tin đăng nhập vào tệp
+            writer.write("Login: " + username + ", " + password + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
