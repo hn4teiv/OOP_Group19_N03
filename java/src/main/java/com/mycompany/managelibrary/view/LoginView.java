@@ -5,62 +5,67 @@ import com.mycompany.managelibrary.dao.UserDao;
 import com.mycompany.managelibrary.entity.User;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class LoginView extends Application {
     private TextField userNameField;
     private PasswordField passwordField;
-    private VBox layout;
-    private Button loginBtn, registerBtn, cancelBtn;  // Thêm nút đăng ký và hủy
-    private UserDao userDao;  // Đối tượng UserDao để kiểm tra và lưu người dùng
+    private Pane layout;
+    private Button loginBtn, registerBtn, cancelBtn;
+    private UserDao userDao;
 
     @Override
     public void start(Stage stage) {
-        // Khởi tạo các trường và nút đăng nhập, đăng ký, và hủy
-        this.userNameField = new TextField();
-        this.passwordField = new PasswordField();
-        this.loginBtn = new Button("Login");
-        this.registerBtn = new Button("Register");
-        this.cancelBtn = new Button("Cancel");
+        try {
+            // Tải giao diện từ file FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
 
-        // Tạo đối tượng UserDao để thao tác với dữ liệu người dùng
-        userDao = new UserDao();
+            // Sử dụng biến fxmlLoader để tải layout
+            layout = fxmlLoader.load();
 
-        // Tạo layout và các thành phần giao diện
-        Label userNameLabel = new Label("Username:");
-        Label passwordLabel = new Label("Password:");
+            // Lấy các thành phần từ file FXML
+            userNameField = (TextField) layout.lookup("#userNameField");
+            passwordField = (PasswordField) layout.lookup("#passwordField");
+            loginBtn = (Button) layout.lookup("#loginBtn");
+            registerBtn = (Button) layout.lookup("#registerBtn");
+            cancelBtn = (Button) layout.lookup("#cancelBtn");
 
-        // Layout
-        layout = new VBox(10, userNameLabel, userNameField, passwordLabel, passwordField, loginBtn, registerBtn, cancelBtn);
-        stage.setScene(new Scene(layout, 300, 250));
-        stage.setTitle("Login");
+            userDao = new UserDao();
 
-        // Khởi tạo controller với LoginView và Stage
-        LoginController loginController = new LoginController(this, stage);
+            // Khởi tạo controller
+            LoginController loginController = new LoginController(this, stage);
 
-        // Đăng ký sự kiện cho các nút
-        addLoginListener(loginController);
-        addRegisterListener();
-        addCancelListener(stage);
+            // Đăng ký sự kiện cho các nút
+            addLoginListener(loginController);
+            addRegisterListener();
+            addCancelListener(stage);
 
-        // Hiển thị cửa sổ đăng nhập
-        stage.show();
+            // Hiển thị cửa sổ
+            stage.setScene(new Scene(layout));
+            stage.setTitle("Login");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showMessage("Lỗi khi tải giao diện!");
+        }
     }
 
-    // Thêm sự kiện cho nút đăng nhập
+
     public void addLoginListener(LoginController controller) {
-        loginBtn.setOnAction(e -> controller.handleLogin());  // Gọi phương thức handleLogin từ LoginController
+        loginBtn.setOnAction(e -> controller.handleLogin());
     }
 
-    // Thêm sự kiện cho nút đăng ký
     private void addRegisterListener() {
         registerBtn.setOnAction(e -> {
             User user = getUser();
@@ -73,12 +78,10 @@ public class LoginView extends Application {
         });
     }
 
-    // Thêm sự kiện cho nút hủy
     private void addCancelListener(Stage stage) {
-        cancelBtn.setOnAction(e -> stage.close());  // Đóng ứng dụng
+        cancelBtn.setOnAction(e -> stage.close());
     }
 
-    // Phương thức hiển thị thông báo
     public void showMessage(String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Thông báo");
@@ -87,18 +90,16 @@ public class LoginView extends Application {
         alert.showAndWait();
     }
 
-    // Lấy thông tin người dùng từ các trường nhập
     public User getUser() {
         return new User(userNameField.getText(), passwordField.getText());
     }
 
-    // Xóa các trường nhập
     public void clearFields() {
         userNameField.clear();
         passwordField.clear();
     }
 
     public static void main(String[] args) {
-        launch(args);  // Chạy ứng dụng JavaFX
+        launch(args);
     }
 }

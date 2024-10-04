@@ -253,4 +253,5 @@ public class BookView extends Application {
         Stage currentStage = (Stage) switchToLoanReturnViewBtn.getScene().getWindow();
         currentStage.setScene(loanReturnScene);
     }
+
 }

@@ -114,14 +114,15 @@ public class LoanReturnController {
         }
     }
 
+    // Listener cho việc chuyển đổi giữa LoanReturnView và BookView
     public class SwitchToBookViewListener implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
+            // Hiển thị BookView và ẩn LoanReturnView
             bookStage.show();  // Hiển thị Stage của BookView
             loanReturnStage.hide();  // Ẩn Stage của LoanReturnView
         }
     }
-
 
     private void refreshView() {
         try {

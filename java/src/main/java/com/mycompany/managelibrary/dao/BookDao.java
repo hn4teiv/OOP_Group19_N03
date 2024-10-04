@@ -1,18 +1,17 @@
 package com.mycompany.managelibrary.dao;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import com.mycompany.managelibrary.entity.Book;
 import com.mycompany.managelibrary.entity.BookXML;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 public class BookDao {
     private static final String FILE_PATH = "data.xml";

@@ -42,7 +42,7 @@ public class LoginController {
     public void handleLogin() {
         try {
             // Lấy thông tin người dùng từ giao diện đăng nhập
-            User user = loginView.getUser();
+            User user = loginView.getUser(); // Đảm bảo bạn đã cập nhật getUser() trong LoginView
 
             // Kiểm tra thông tin đăng nhập từ UserDao
             if (userDao.checkUser(user)) {
@@ -68,7 +68,7 @@ public class LoginController {
             // Ghi thông tin đăng nhập vào tệp
             writer.write("Login: " + username + ", " + password + "\n");
         } catch (IOException e) {
-            e.printStackTrace();
+            loginView.showMessage("Lỗi khi ghi thông tin đăng nhập vào tệp: " + e.getMessage());
         }
     }
 }

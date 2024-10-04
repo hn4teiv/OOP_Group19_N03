@@ -12,7 +12,7 @@ import com.mycompany.managelibrary.entity.LoanReturn;
 import com.mycompany.managelibrary.entity.LoanReturnXML;
 
 public class LoanReturnDao {
-    private static final String FILE_PATH = "loan.xml";
+    private static final String FILE_PATH = "loans.xml";
 
     public List<LoanReturn> getListLoanReturn() {
         List<LoanReturn> loanReturns = new ArrayList<>();
@@ -72,13 +72,6 @@ public class LoanReturnDao {
             writeListToXml(loanReturns);
         }
         return removed;
-    }
-
-    public List<LoanReturn> searchLoanReturnByTen(String ten) {
-        List<LoanReturn> loanReturns = getListLoanReturn();
-        return loanReturns.stream()
-                .filter(loanReturn -> loanReturn.getTen().toLowerCase().contains(ten.toLowerCase()))
-                .collect(Collectors.toList());
     }
 
     private void writeListToXml(List<LoanReturn> loanReturns) {

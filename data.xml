@@ -1,53 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Books>
     <Book>
-        <GiaThanh>150.0</GiaThanh>
-        <Id>1</Id>
-        <LoaiBook>Fiction</LoaiBook>
-        <MaSo>001</MaSo>
-        <NhaXuatBan>NXB Văn Học</NhaXuatBan>
-        <SoLuong>10</SoLuong>
-        <TacGia>Nguyen Hieu</TacGia>
-        <TenBook>Cuộc Sống Tươi Đẹp</TenBook>
+        <giaThanh>120.0</giaThanh>
+        <id>1</id>
+        <loaiBook>World</loaiBook>
+        <maSo>001</maSo>
+        <nhaXuatBan>Vanh</nhaXuatBan>
+        <soLuong>1</soLuong>
+        <tacGia>Anh</tacGia>
+        <tenBook>Hello World</tenBook>
     </Book>
     <Book>
-        <GiaThanh>200.0</GiaThanh>
-        <Id>2</Id>
-        <LoaiBook>Science</LoaiBook>
-        <MaSo>002</MaSo>
-        <NhaXuatBan>NXB Khoa Học</NhaXuatBan>
-        <SoLuong>15</SoLuong>
-        <TacGia>Tran Minh C</TacGia>
-        <TenBook>Khoa Học Thú Vị</TenBook>
-    </Book>
-    <Book>
-        <GiaThanh>180.5</GiaThanh>
-        <Id>3</Id>
-        <LoaiBook>Literature</LoaiBook>
-        <MaSo>003</MaSo>
-        <NhaXuatBan>NXB Văn Học</NhaXuatBan>
-        <SoLuong>12</SoLuong>
-        <TacGia>Le Thi B</TacGia>
-        <TenBook>Hành Trình Cảm Xúc</TenBook>
-    </Book>
-    <Book>
-        <GiaThanh>120.0</GiaThanh>
-        <Id>4</Id>
-        <LoaiBook>Philosophy</LoaiBook>
-        <MaSo>005</MaSo>
-        <NhaXuatBan>NXB Tri Thức</NhaXuatBan>
-        <SoLuong>20</SoLuong>
-        <TacGia>Nguyen Thanh A</TacGia>
-        <TenBook>Triết Lý Cuộc Sống</TenBook>
-    </Book>
-    <Book>
-        <GiaThanh>120.0</GiaThanh>
-        <Id>5</Id>
-        <LoaiBook>Word</LoaiBook>
-        <MaSo>004</MaSo>
-        <NhaXuatBan>Viet</NhaXuatBan>
-        <SoLuong>1</SoLuong>
-        <TacGia>Anh</TacGia>
-        <TenBook>HelloWorld</TenBook>
+        <giaThanh>111.0</giaThanh>
+        <id>2</id>
+        <loaiBook>Lo</loaiBook>
+        <maSo>002</maSo>
+        <nhaXuatBan>He</nhaXuatBan>
+        <soLuong>1</soLuong>
+        <tacGia>Hu</tacGia>
+        <tenBook>Hi</tenBook>
     </Book>
 </Books>

@@ -1,70 +1,25 @@
 package com.mycompany.managelibrary.entity;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "LoanReturns")  // Tên gốc cho phần tử XML
+@XmlAccessorType(XmlAccessType.FIELD)  // Kiểm soát cách JAXB truy cập vào các trường
 public class LoanReturnXML {
-    private List<LoanReturn> loanReturns;
-    private static final String FILE_PATH = "loanreturn.xml";
 
-    public LoanReturnXML() {
-        this.loanReturns = new ArrayList<>();
-    }
+    @XmlElement(name = "LoanReturn")  // Tên phần tử cho mỗi đối tượng LoanReturn trong XML
+    private List<LoanReturn> loanReturns = null;  // Danh sách các đối tượng LoanReturn
 
+    // Phương thức lấy danh sách LoanReturn
     public List<LoanReturn> getLoanReturns() {
         return loanReturns;
     }
 
+    // Phương thức thiết lập danh sách LoanReturn
     public void setLoanReturns(List<LoanReturn> loanReturns) {
         this.loanReturns = loanReturns;
-    }
-
-    public void loadLoanReturns() {
-        try {
-            File file = new File(FILE_PATH);
-            if (file.exists()) {
-                JAXBContext context = JAXBContext.newInstance(LoanReturnListWrapper.class);
-                Unmarshaller um = context.createUnmarshaller();
-
-                LoanReturnListWrapper wrapper = (LoanReturnListWrapper) um.unmarshal(file);
-                this.loanReturns = wrapper.getLoanReturns();
-            } else {
-                this.loanReturns = new ArrayList<>();
-            }
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveLoanReturns() {
-        try {
-            JAXBContext context = JAXBContext.newInstance(LoanReturnListWrapper.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            LoanReturnListWrapper wrapper = new LoanReturnListWrapper();
-            wrapper.setLoanReturns(this.loanReturns);
-
-            marshaller.marshal(wrapper, new File(FILE_PATH));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static class LoanReturnListWrapper {
-        private List<LoanReturn> loanReturns;
-
-        public List<LoanReturn> getLoanReturns() {
-            return loanReturns;
-        }
-
-        public void setLoanReturns(List<LoanReturn> loanReturns) {
-            this.loanReturns = loanReturns;
-        }
     }
 }

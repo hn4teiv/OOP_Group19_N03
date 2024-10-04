@@ -1,0 +1,32 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.mycompany.managelibrary.controller.BookController">
+    <GridPane>
+        <Label text="Tên Sách:"/>
+        <TextField fx:id="tenBookField"/>
+        <Label text="Loại Sách:"/>
+        <TextField fx:id="loaiBookField"/>
+        <Label text="Giá Thành:"/>
+        <TextField fx:id="giaThanhField"/>
+        <Label text="Số Lượng:"/>
+        <TextField fx:id="soLuongField"/>
+        <Label text="Mã Số:"/>
+        <TextField fx:id="maSoField"/>
+        <Label text="Nhà Xuất Bản:"/>
+        <TextField fx:id="nhaXuatBanField"/>
+        <Label text="Tác Giả:"/>
+        <TextField fx:id="tacGiaField"/>
+    </GridPane>
+
+    <VBox spacing="10">
+        <Button fx:id="addBookBtn" text="Thêm"/>
+        <Button fx:id="editBookBtn" text="Sửa"/>
+        <Button fx:id="deleteBookBtn" text="Xóa"/>
+        <Button fx:id="switchToLoanReturnViewBtn" text="Chuyển đến Quản lý Mượn Trả"/>
+    </VBox>
+
+    <TableView fx:id="bookTable">
+        <!-- Các cột TableView được thêm vào ở đây -->
+    </TableView>
+</VBox>

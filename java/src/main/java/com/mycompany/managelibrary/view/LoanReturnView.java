@@ -1,20 +1,18 @@
 package com.mycompany.managelibrary.view;
 
-import java.util.List;
-
 import com.mycompany.managelibrary.entity.LoanReturn;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.Scene; // Nhập Scene
+import javafx.scene.control.Alert.AlertType;
+
+import java.util.List;
 
 public class LoanReturnView {
     private Stage loanReturnStage;
@@ -38,10 +36,9 @@ public class LoanReturnView {
     private Button addButton;
     private Button editButton;
     private Button deleteButton;
-    private Button searchButton;
     private Button switchToBookButton;
 
-    // Thêm phần hiển thị danh sách LoanReturn
+    // Danh sách LoanReturn
     private ListView<String> loanReturnListView;
 
     public LoanReturnView() {
@@ -65,7 +62,6 @@ public class LoanReturnView {
         addButton = new Button("Thêm");
         editButton = new Button("Cập nhật");
         deleteButton = new Button("Xóa");
-        searchButton = new Button("Tìm kiếm");
         switchToBookButton = new Button("Chuyển sang Quản lý Sách");
 
         // Danh sách LoanReturn
@@ -87,8 +83,7 @@ public class LoanReturnView {
         layout.add(trangThaiLabel, 0, 5);
         layout.add(trangThaiField, 1, 5);
 
-        buttonLayout.getChildren().addAll(addButton, editButton, deleteButton, searchButton, switchToBookButton);
-
+        buttonLayout.getChildren().addAll(addButton, editButton, deleteButton, switchToBookButton);
         layout.add(buttonLayout, 0, 6, 2, 1);
         layout.add(loanReturnListView, 0, 7, 2, 1);
 
@@ -97,8 +92,10 @@ public class LoanReturnView {
     }
 
     // Hàm để hiển thị LoanReturnView
-    public GridPane getView() {
-        return layout;  // Trả về layout thay vì Scene
+    public void show() {
+        Scene scene = new Scene(layout); // Tạo Scene với layout
+        loanReturnStage.setScene(scene);  // Đặt Scene cho Stage
+        loanReturnStage.show();            // Hiển thị Stage
     }
 
     // Phương thức để hiển thị danh sách mượn trả
@@ -122,14 +119,18 @@ public class LoanReturnView {
 
             return new LoanReturn(id, diaChi, ten, lop, tenSach, trangThai);
         } catch (NumberFormatException e) {
+            showMessage("Vui lòng nhập ID hợp lệ."); // Thông báo lỗi khi ID không hợp lệ
             return null; // Trả về null nếu thông tin nhập vào không hợp lệ
         }
     }
 
     // Hiển thị thông báo
     public void showMessage(String message) {
-        // Cách đơn giản hiển thị thông báo (chưa có mã chi tiết)
-        System.out.println(message);
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Thông báo");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait(); // Hiển thị thông báo
     }
 
     // Thêm listener cho các button
@@ -145,12 +146,11 @@ public class LoanReturnView {
         deleteButton.setOnAction(listener);
     }
 
-    public void addSearchListener(EventHandler<ActionEvent> listener) {
-        searchButton.setOnAction(listener);
-    }
-
     public void addSwitchToBookViewListener(EventHandler<ActionEvent> listener) {
-        switchToBookButton.setOnAction(listener);
+        switchToBookButton.setOnAction(event -> {
+            System.out.println("Nút chuyển sang Quản lý Sách đã được nhấn!");
+            listener.handle(event); // Gọi listener được truyền vào
+        });
     }
 
     // Reset form và thông tin
@@ -167,6 +167,16 @@ public class LoanReturnView {
         addButton.setDisable(false);
         editButton.setDisable(false);
         deleteButton.setDisable(false);
-        searchButton.setDisable(false);
     }
+
+    public Stage getLoanReturnStage() {
+        return loanReturnStage;
+    }
+
+    // Phương thức để trả về layout (bố cục) cho giao diện LoanReturn
+    // Hàm để hiển thị LoanReturnView
+    public GridPane getView() {
+        return layout;  // Trả về layout thay vì Scene
+    }
+
 }
