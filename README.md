@@ -37,8 +37,8 @@ Dự án này hướng đến việc phát triển một giải pháp toàn di�
 # 1.2.2.Library Management System Flowchart
 ![LoginView](image/Library%20Management%20System%20Flowchart.jpg)
 
-# Giao diện đầu tiên của dự án
-![LoginView](anh.png)
+# Giao diện đăng nhập
+![LoginView](image/anh.png)
 
 # Code chính và Login
 ![LoginView](image/Code_Login.jpg)
