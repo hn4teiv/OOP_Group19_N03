@@ -42,3 +42,6 @@ Dự án này hướng đến việc phát triển một giải pháp toàn di�
 
 # Code chính và Login
 ![LoginView](image/Code_Login.jpg)
+
+# Giao diện Database
+![LoginView](image/Database.jpg)
