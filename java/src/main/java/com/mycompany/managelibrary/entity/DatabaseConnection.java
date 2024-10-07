@@ -5,11 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://localhost:5432/tên_cơ_sở_dữ_liệu"; // Thay thế với tên cơ sở dữ liệu của bạn
-    private static final String USER = "postgres"; // Thay thế với tên người dùng của bạn
-    private static final String PASSWORD = "mật_khẩu"; // Thay thế với mật khẩu của bạn
+    private static final String JDBC_URL = "jdbc:postgresql://pg-28f387a6-oopjava19.i.aivencloud.com:24516/users?sslmode=require";
+    private static final String USERNAME = "";
+    private static final String PASSWORD = "";
+
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
 }
