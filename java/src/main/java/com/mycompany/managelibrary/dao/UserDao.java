@@ -1,123 +1,133 @@
 package com.mycompany.managelibrary.dao;
 
-import com.mycompany.managelibrary.entity.User;
-import javafx.application.Platform;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao {
-    private static final String XML_FILE_PATH = "users.xml";
+import com.mycompany.managelibrary.entity.DatabaseConnection;
+import com.mycompany.managelibrary.entity.User;
 
+public class UserDao {
+    private static final String JDBC_URL = "jdbc:postgresql://pg-28f387a6-oopjava19.i.aivencloud.com:24516/users?sslmode=require";
+    private static final String USERNAME = "";
+    private static final String PASSWORD = "";
+
+    // Lấy tất cả người dùng từ cơ sở dữ liệu
+    public List<User> getAllUsersFromDb() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT username, password FROM users";
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                users.add(new User(username, password));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving users from DB: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    // Đẩy dữ liệu user lên cơ sở dữ liệu
+    public void saveUsersToDb(List<User> users) {
+        for (User user : users) {
+            if (!checkUserExists(user.getUsername())) {
+                saveUserToDb(user); // Lưu người dùng vào cơ sở dữ liệu
+            } else {
+                System.out.println("User " + user.getUsername() + " already exists in the database.");
+            }
+        }
+    }
+
+    // Đăng ký người dùng mới
     public boolean registerUser(User user) {
         if (checkUserExists(user.getUsername())) {
             return false; // Tên đăng nhập đã tồn tại
         }
-        saveUserToXml(user);
+        saveUserToDb(user);  // Lưu người dùng vào cơ sở dữ liệu
         return true; // Đăng ký thành công
     }
 
+    // Kiểm tra xem tên đăng nhập đã tồn tại chưa
     private boolean checkUserExists(String username) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new File(XML_FILE_PATH));
-            document.getDocumentElement().normalize();
+        String query = "SELECT 1 FROM users WHERE username = ?";
 
-            Element root = document.getDocumentElement();
-            List<Element> users = getChildElements(root, "user");
-
-            for (Element userElement : users) {
-                String existingUsername = userElement.getElementsByTagName("username").item(0).getTextContent();
-                if (existingUsername.equals(username)) {
-                    return true; // Tên đăng nhập đã tồn tại
-                }
-            }
-        } catch (Exception e) {
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); // Trả về true nếu tìm thấy tên đăng nhập
+        } catch (SQLException e) {
+            System.err.println("Error checking user existence: " + e.getMessage());
             e.printStackTrace();
         }
-        return false; // Tên đăng nhập chưa tồn tại
+        return false; // Không tìm thấy tên đăng nhập
     }
 
-    private void saveUserToXml(User user) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document;
-
-            File xmlFile = new File(XML_FILE_PATH);
-            if (xmlFile.exists()) {
-                document = builder.parse(xmlFile);
-            } else {
-                document = builder.newDocument();
-                Element root = document.createElement("users");
-                document.appendChild(root);
-            }
-
-            Element root = document.getDocumentElement();
-
-            // Tạo phần tử user
-            Element userElement = document.createElement("user");
-            Element usernameElement = document.createElement("username");
-            usernameElement.setTextContent(user.getUsername());
-            Element passwordElement = document.createElement("password");
-            passwordElement.setTextContent(user.getPassword());
-
-            userElement.appendChild(usernameElement);
-            userElement.appendChild(passwordElement);
-            root.appendChild(userElement);
-
-            // Ghi lại file XML
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            DOMSource source = new DOMSource(document);
-            StreamResult result = new StreamResult(xmlFile);
-            transformer.transform(source, result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<Element> getChildElements(Element parent, String tagName) {
-        List<Element> elements = new ArrayList<>();
-        for (int i = 0; i < parent.getElementsByTagName(tagName).getLength(); i++) {
-            elements.add((Element) parent.getElementsByTagName(tagName).item(i));
-        }
-        return elements;
-    }
-
+    // Kiểm tra đăng nhập người dùng
     public boolean checkUser(User user) {
-        // Kiểm tra thông tin đăng nhập
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new File(XML_FILE_PATH));
-            document.getDocumentElement().normalize();
+        String query = "SELECT 1 FROM users WHERE username = ? AND password = ?";
 
-            Element root = document.getDocumentElement();
-            List<Element> users = getChildElements(root, "user");
-
-            for (Element userElement : users) {
-                String existingUsername = userElement.getElementsByTagName("username").item(0).getTextContent();
-                String existingPassword = userElement.getElementsByTagName("password").item(0).getTextContent();
-                if (existingUsername.equals(user.getUsername()) && existingPassword.equals(user.getPassword())) {
-                    return true; // Đăng nhập thành công
-                }
-            }
-        } catch (Exception e) {
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); // Trả về true nếu có người dùng khớp
+        } catch (SQLException e) {
+            System.err.println("Error checking user credentials: " + e.getMessage());
             e.printStackTrace();
         }
-        return false; // Đăng nhập thất bại
+        return false; // Không tìm thấy người dùng
     }
+
+    // Lưu một người dùng vào cơ sở dữ liệu
+    private void saveUserToDb(User user) {
+        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            int rowsAffected = stmt.executeUpdate();  // Thực hiện lệnh INSERT
+            System.out.println(rowsAffected + " rows affected for new user: " + user.getUsername());
+        } catch (SQLException e) {
+            System.err.println("Error saving user to DB: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // In ra tất cả người dùng
+    public void printAllUsers() {
+        List<User> users = getAllUsersFromDb();
+        for (User user : users) {
+            System.out.println("Username: " + user.getUsername() + ", Password: " + user.getPassword());
+        }
+    }
+
+    public static void main(String[] args) {
+        UserDao userDao = new UserDao();
+
+        // Lấy dữ liệu người dùng từ cơ sở dữ liệu
+        List<User> usersFromDb = userDao.getAllUsersFromDb();
+
+        // In ra tất cả người dùng
+        if (usersFromDb.isEmpty()) {
+            System.out.println("Không có người dùng nào trong cơ sở dữ liệu.");
+        } else {
+            System.out.println("Danh sách người dùng trong cơ sở dữ liệu:");
+            for (User user : usersFromDb) {
+                System.out.println("Username: " + user.getUsername() + ", Password: " + user.getPassword());
+            }
+        }
+
+        System.out.println("Dữ liệu đã được lấy từ cơ sở dữ liệu thành công!");
+    }
+
 }
