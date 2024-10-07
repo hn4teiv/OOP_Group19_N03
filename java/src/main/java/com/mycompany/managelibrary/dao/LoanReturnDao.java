@@ -1,92 +1,101 @@
 package com.mycompany.managelibrary.dao;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import com.mycompany.managelibrary.entity.LoanReturn;
-import com.mycompany.managelibrary.entity.LoanReturnXML;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class LoanReturnDao {
-    private static final String FILE_PATH = "loans.xml";
+    // Thông tin kết nối cơ sở dữ liệu
+    private static final String URL = "jdbc:postgresql://pg-28f387a6-oopjava19.i.aivencloud.com:24516/users?sslmode=require";
+    private static final String USER = "";
+    private static final String PASSWORD = "";
 
-    public List<LoanReturn> getListLoanReturn() {
-        List<LoanReturn> loanReturns = new ArrayList<>();
-        try {
-            File xmlFile = new File(FILE_PATH);
-            if (xmlFile.exists()) {
-                JAXBContext jaxbContext = JAXBContext.newInstance(LoanReturnXML.class);
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                LoanReturnXML loanReturnList = (LoanReturnXML) jaxbUnmarshaller.unmarshal(xmlFile);
-                if (loanReturnList != null && loanReturnList.getLoanReturns() != null) {
-                    loanReturns = loanReturnList.getLoanReturns();
-                } else {
-                    System.out.println("LoanReturnXML is null or LoanReturns list is empty");
-                }
-            } else {
-                System.out.println("XML file not found");
+    // Lấy kết nối đến cơ sở dữ liệu
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+    // Lấy danh sách tất cả các loan returns từ cơ sở dữ liệu
+    public ObservableList<LoanReturn> getListLoanReturns() throws SQLException {
+        ObservableList<LoanReturn> loanReturns = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM loan_return";
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                LoanReturn loanReturn = new LoanReturn();
+                loanReturn.setId(resultSet.getInt("id"));
+                loanReturn.setDiaChi(resultSet.getString("dia_chi"));
+                loanReturn.setTen(resultSet.getString("ten"));
+                loanReturn.setLop(resultSet.getString("lop"));
+                loanReturn.setTenSach(resultSet.getString("ten_sach"));
+                loanReturn.setTrangThai(resultSet.getString("trang_thai"));
+                loanReturns.add(loanReturn);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách loan returns: " + e.getMessage());
         }
+
         return loanReturns;
     }
 
-
-
-    public void addLoanReturn(LoanReturn loanReturn) {
-        List<LoanReturn> loanReturns = getListLoanReturn();
-        int maxId = loanReturns.stream().mapToInt(LoanReturn::getId).max().orElse(0);
-        loanReturn.setId(maxId + 1);
-        loanReturns.add(loanReturn);
-        writeListToXml(loanReturns);
-    }
-
-    public boolean updateLoanReturn(LoanReturn loanReturn) {
-        List<LoanReturn> loanReturns = getListLoanReturn();
-        boolean found = false;
-        for (int i = 0; i < loanReturns.size(); i++) {
-            if (loanReturns.get(i).getId() == loanReturn.getId()) {
-                loanReturns.set(i, loanReturn);
-                found = true;
-                break;
-            }
-        }
-        if (found) {
-            writeListToXml(loanReturns);
-        }
-        return found;
-    }
-
-    public boolean deleteLoanReturn(int id) {
-        List<LoanReturn> loanReturns = getListLoanReturn();
-        boolean removed = loanReturns.removeIf(loanReturn -> loanReturn.getId() == id);
-        if (removed) {
-            for (int i = 0; i < loanReturns.size(); i++) {
-                loanReturns.get(i).setId(i + 1);
-            }
-            writeListToXml(loanReturns);
-        }
-        return removed;
-    }
-
-    private void writeListToXml(List<LoanReturn> loanReturns) {
-        try {
-            File xmlFile = new File(FILE_PATH);
-            JAXBContext jaxbContext = JAXBContext.newInstance(LoanReturnXML.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-            LoanReturnXML loanReturnList = new LoanReturnXML();
-            loanReturnList.setLoanReturns(loanReturns);
-
-            jaxbMarshaller.marshal(loanReturnList, xmlFile);
-        } catch (Exception e) {
-            e.printStackTrace();
+    // Thêm một loan return mới
+    public void addLoanReturn(LoanReturn loanReturn) throws SQLException {
+        String sql = "INSERT INTO loan_return (dia_chi, ten, lop, ten_sach, trang_thai) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, loanReturn.getDiaChi());
+            pstmt.setString(2, loanReturn.getTen());
+            pstmt.setString(3, loanReturn.getLop());
+            pstmt.setString(4, loanReturn.getTenSach());
+            pstmt.setString(5, loanReturn.getTrangThai());
+            pstmt.executeUpdate();
+            System.out.println("Thêm thành công LoanReturn: " + loanReturn);
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thêm loan return: " + e.getMessage());
         }
     }
+
+    // Cập nhật một loan return
+    public boolean updateLoanReturn(LoanReturn loanReturn) throws SQLException {
+        String sql = "UPDATE loan_return SET dia_chi = ?, ten = ?, lop = ?, ten_sach = ?, trang_thai = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, loanReturn.getDiaChi());
+            pstmt.setString(2, loanReturn.getTen());
+            pstmt.setString(3, loanReturn.getLop());
+            pstmt.setString(4, loanReturn.getTenSach());
+            pstmt.setString(5, loanReturn.getTrangThai());
+            pstmt.setInt(6, loanReturn.getId());
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("Số dòng bị ảnh hưởng khi cập nhật: " + rowsAffected);
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi cập nhật loan return: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Xóa một loan return
+    public boolean deleteLoanReturn(int id) throws SQLException {
+        String sql = "DELETE FROM loan_return WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("Số dòng bị ảnh hưởng khi xóa: " + rowsAffected);
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi xóa loan return: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

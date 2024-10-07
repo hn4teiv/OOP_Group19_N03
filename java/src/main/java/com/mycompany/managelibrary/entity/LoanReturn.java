@@ -1,107 +1,95 @@
 package com.mycompany.managelibrary.entity;
 
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-@XmlRootElement(name = "LoanReturn")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class LoanReturn implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class LoanReturn {
+    private SimpleIntegerProperty id;
+    private SimpleStringProperty diaChi;
+    private SimpleStringProperty ten;
+    private SimpleStringProperty lop;
+    private SimpleStringProperty tenSach;
+    private SimpleStringProperty trangThai;
 
-    @XmlElement(name = "Id")
-    private int id;
-
-    @XmlElement(name = "DiaChi")
-    private String diaChi;
-
-    @XmlElement(name = "Ten")
-    private String ten;
-
-    @XmlElement(name = "Lop")
-    private String lop;
-
-    @XmlElement(name = "TenSach")
-    private String tenSach;
-
-    @XmlElement(name = "TrangThai")
-    private String trangThai; // "Đã trả" or "Chưa trả"
-
-    // Constructor mặc định
     public LoanReturn() {
+        this.id = new SimpleIntegerProperty();
+        this.diaChi = new SimpleStringProperty();
+        this.ten = new SimpleStringProperty();
+        this.lop = new SimpleStringProperty();
+        this.tenSach = new SimpleStringProperty();
+        this.trangThai = new SimpleStringProperty();
     }
 
-    // Constructor với 5 tham số
-    public LoanReturn(int id, String diaChi, String ten, String lop, String tenSach) {
-        this.id = id;
-        this.diaChi = diaChi;
-        this.ten = ten;
-        this.lop = lop;
-        this.tenSach = tenSach;
-        this.trangThai = "Chưa trả"; // Giá trị mặc định
-    }
-
-    // Constructor với 6 tham số
-    public LoanReturn(int id, String diaChi, String ten, String lop, String tenSach, String trangThai) {
-        this.id = id;
-        this.diaChi = diaChi;
-        this.ten = ten;
-        this.lop = lop;
-        this.tenSach = tenSach;
-        this.trangThai = trangThai;
+    // Getter và Setter cho các thuộc tính
+    public int getId() {
+        return id.get();
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id.set(id);
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
-    }
-
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
-
-    public void setLop(String lop) {
-        this.lop = lop;
-    }
-
-    public void setTenSach(String tenSach) {
-        this.tenSach = tenSach;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public int getId() {
+    public SimpleIntegerProperty idProperty() {
         return id;
     }
 
     public String getDiaChi() {
+        return diaChi.get();
+    }
+
+    public void setDiaChi(String diaChi) {
+        this.diaChi.set(diaChi);
+    }
+
+    public SimpleStringProperty diaChiProperty() {
         return diaChi;
     }
 
     public String getTen() {
+        return ten.get();
+    }
+
+    public void setTen(String ten) {
+        this.ten.set(ten);
+    }
+
+    public SimpleStringProperty tenProperty() {
         return ten;
     }
 
     public String getLop() {
+        return lop.get();
+    }
+
+    public void setLop(String lop) {
+        this.lop.set(lop);
+    }
+
+    public SimpleStringProperty lopProperty() {
         return lop;
     }
 
     public String getTenSach() {
+        return tenSach.get();
+    }
+
+    public void setTenSach(String tenSach) {
+        this.tenSach.set(tenSach);
+    }
+
+    public SimpleStringProperty tenSachProperty() {
         return tenSach;
     }
 
     public String getTrangThai() {
-        return trangThai;
+        return trangThai.get();
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    public void setTrangThai(String trangThai) {
+        this.trangThai.set(trangThai);
+    }
+
+    public SimpleStringProperty trangThaiProperty() {
+        return trangThai;
     }
 }

@@ -1,10 +1,8 @@
 package com.mycompany.managelibrary.view;
 
 import java.util.List;
-
 import com.mycompany.managelibrary.dao.BookDao;
 import com.mycompany.managelibrary.entity.Book;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -36,16 +35,6 @@ public class BookView extends Application {
         bookDao = new BookDao();
     }
 
-    // Thêm phương thức này vào để trả về layout
-    public VBox getLayout() {
-        return createLayout();  // Sử dụng createLayout() để trả về layout đã tạo
-    }
-
-    // Phương thức này trả về Scene sử dụng layout đã được thiết lập
-    public Parent getView() {
-        return createLayout(); // Trả về layout (Parent) thay vì Scene
-    }
-
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Quản lý Sách");
@@ -54,16 +43,15 @@ public class BookView extends Application {
         setupTable();
 
         initializeComponents();
-        // Sử dụng createLayout() thay vì setLayouts()
         Scene scene = new Scene(createLayout(), 800, 600);
 
+        // Hiển thị danh sách sách từ BookDao
         showListBook(bookDao.getListBooks());
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    // Hàm khởi tạo các thành phần UI (TextFields, Buttons, etc.)
     private void initializeComponents() {
         tenBookField = new TextField();
         loaiBookField = new TextField();
@@ -82,12 +70,10 @@ public class BookView extends Application {
         deleteBookBtn = new Button("Xóa");
         deleteBookBtn.setOnAction(e -> deleteBook());
 
-        // Nút chuyển sang giao diện Quản lý Mượn Trả
         switchToLoanReturnViewBtn = new Button("Chuyển đến Quản lý Mượn Trả");
-        switchToLoanReturnViewBtn.setOnAction(e -> switchToLoanReturnView());  // Sự kiện chuyển giao diện
+        switchToLoanReturnViewBtn.setOnAction(e -> switchToLoanReturnView());
     }
 
-    // Hàm thiết lập các cột trong TableView
     private void setupTable() {
         TableColumn<Book, Integer> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -117,7 +103,6 @@ public class BookView extends Application {
         bookTable.setItems(bookList);
     }
 
-    // Hàm thiết lập giao diện (Layout) với các thành phần
     private VBox createLayout() {
         GridPane formPanel = new GridPane();
         formPanel.setHgap(10);
@@ -147,13 +132,13 @@ public class BookView extends Application {
         return new VBox(layout);
     }
 
-    // Hiển thị danh sách sách lên TableView
+    // Hiển thị danh sách sách từ BookDao
     public void showListBook(List<Book> books) {
         bookList.clear();
         bookList.addAll(books);
     }
 
-    // Xóa thông tin sách trong các ô nhập liệu
+    // Xóa thông tin sách sau khi thao tác
     public void clearBookInfo() {
         tenBookField.clear();
         loaiBookField.clear();
@@ -164,70 +149,75 @@ public class BookView extends Application {
         tacGiaField.clear();
     }
 
-    // Hàm thêm sách
     private void addBook() {
-        Book book = getBookInfo();
-        bookDao.add(book);
-        showListBook(bookDao.getListBooks());
-        clearBookInfo();
-        showMessage("Thêm sách thành công!");
+        try {
+            Book book = getBookInfo();
+            bookDao.add(book);
+            showListBook(bookDao.getListBooks());
+            clearBookInfo();
+            showMessage("Thêm sách thành công!");
+        } catch (Exception e) {
+            showMessage("Lỗi khi thêm sách: " + e.getMessage());
+        }
     }
 
-    // Hàm sửa sách
     private void editBook() {
         Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
-            selectedBook.setTenBook(tenBookField.getText());
-            selectedBook.setLoaiBook(loaiBookField.getText());
-            selectedBook.setGiaThanh(Double.parseDouble(giaThanhField.getText()));
-            selectedBook.setSoLuong(Integer.parseInt(soLuongField.getText()));
-            selectedBook.setMaSo(maSoField.getText());
-            selectedBook.setNhaXuatBan(nhaXuatBanField.getText());
-            selectedBook.setTacGia(tacGiaField.getText());
+            try {
+                selectedBook.setTenBook(tenBookField.getText());
+                selectedBook.setLoaiBook(loaiBookField.getText());
+                selectedBook.setGiaThanh(Double.parseDouble(giaThanhField.getText()));
+                selectedBook.setSoLuong(Integer.parseInt(soLuongField.getText()));
+                selectedBook.setMaSo(maSoField.getText());
+                selectedBook.setNhaXuatBan(nhaXuatBanField.getText());
+                selectedBook.setTacGia(tacGiaField.getText());
 
-            bookDao.edit(selectedBook);
-            showListBook(bookDao.getListBooks());
-            clearBookInfo();
-            showMessage("Sửa sách thành công!");
+                bookDao.edit(selectedBook);
+                showListBook(bookDao.getListBooks());
+                clearBookInfo();
+                showMessage("Sửa sách thành công!");
+            } catch (Exception e) {
+                showMessage("Lỗi khi sửa sách: " + e.getMessage());
+            }
         }
     }
 
-    // Hàm xóa sách
     private void deleteBook() {
         Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
-            bookDao.delete(selectedBook.getId());
-            showListBook(bookDao.getListBooks());
-            clearBookInfo();
-            showMessage("Xóa sách thành công!");
+            try {
+                bookDao.delete(selectedBook.getId());
+                showListBook(bookDao.getListBooks());
+                clearBookInfo();
+                showMessage("Xóa sách thành công!");
+            } catch (Exception e) {
+                showMessage("Lỗi khi xóa sách: " + e.getMessage());
+            }
         }
     }
 
-    // Hiển thị thông báo cho người dùng
-    public void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Thông báo");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    // Lấy thông tin sách từ các TextField
-    public Book getBookInfo() {
+    public Book getBookInfo() throws NumberFormatException {
         Book book = new Book();
         book.setTenBook(tenBookField.getText());
         book.setLoaiBook(loaiBookField.getText());
-        book.setGiaThanh(Double.parseDouble(giaThanhField.getText()));
-        book.setSoLuong(Integer.parseInt(soLuongField.getText()));
+        book.setGiaThanh(Double.parseDouble(giaThanhField.getText())); // Chuyển đổi từ chuỗi sang số
+        book.setSoLuong(Integer.parseInt(soLuongField.getText())); // Chuyển đổi từ chuỗi sang số
         book.setMaSo(maSoField.getText());
         book.setNhaXuatBan(nhaXuatBanField.getText());
         book.setTacGia(tacGiaField.getText());
         return book;
     }
+    public Pane getLayout() {
+        // Trả về layout hiện tại của BookView
+        return getLayout(); // Thay 'yourLayout' bằng tên biến layout thực tế của bạn
+    }
 
-    // Hàm main để chạy ứng dụng
-    public static void main(String[] args) {
-        launch(args);
+    public void showMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Thông báo");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
     public void addAddBookListener(EventHandler<ActionEvent> handler) {
         addBookBtn.setOnAction(handler);
@@ -254,4 +244,8 @@ public class BookView extends Application {
         currentStage.setScene(loanReturnScene);
     }
 
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

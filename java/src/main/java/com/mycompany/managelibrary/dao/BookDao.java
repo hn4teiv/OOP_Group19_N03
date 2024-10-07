@@ -1,110 +1,139 @@
 package com.mycompany.managelibrary.dao;
 
 import com.mycompany.managelibrary.entity.Book;
-import com.mycompany.managelibrary.entity.BookXML;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.sql.*;
 import java.util.ArrayList;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import java.util.List;
 
 public class BookDao {
-    private static final String FILE_PATH = "data.xml";
 
+    // Thông tin kết nối cơ sở dữ liệu
+    private static final String URL = "jdbc:postgresql://pg-28f387a6-oopjava19.i.aivencloud.com:24516/users?sslmode=require";
+    private static final String USER = "";
+    private static final String PASSWORD = "";
+
+    // Lấy danh sách tất cả các sách từ cơ sở dữ liệu
     public ObservableList<Book> getListBooks() {
         ObservableList<Book> books = FXCollections.observableArrayList();
-        try {
-            File xmlFile = new File(FILE_PATH);
-            if (!xmlFile.exists()) {
-                createXmlFile(); // Tạo file nếu nó không tồn tại
+        String query = "SELECT * FROM books";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("id"));
+                book.setTenBook(resultSet.getString("ten_book"));
+                book.setLoaiBook(resultSet.getString("loai_book"));
+                book.setGiaThanh(resultSet.getDouble("gia_thanh"));
+                book.setSoLuong(resultSet.getInt("so_luong"));
+                book.setMaSo(resultSet.getString("ma_so"));
+                book.setNhaXuatBan(resultSet.getString("nha_xuat_ban"));
+                book.setTacGia(resultSet.getString("tac_gia"));
+                books.add(book);
             }
 
-            JAXBContext jaxbContext = JAXBContext.newInstance(BookXML.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            BookXML bookList = (BookXML) jaxbUnmarshaller.unmarshal(xmlFile);
-            if (bookList != null && bookList.getBooks() != null) {
-                books.addAll(bookList.getBooks());
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // In ra thông báo lỗi
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
         return books;
     }
 
-    private void createXmlFile() {
-        try {
-            File xmlFile = new File(FILE_PATH);
-            xmlFile.createNewFile(); // Tạo file mới
-            FileWriter writer = new FileWriter(xmlFile);
-            writer.write("<BookXML>\n<books></books>\n</BookXML>"); // Cấu trúc XML mặc định
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace(); // In ra thông báo lỗi nếu có
-        }
-    }
-
+    // Thêm một sách vào cơ sở dữ liệu
     public void add(Book book) {
-        ObservableList<Book> books = getListBooks();
-        int nextId = generateNextId(books); // Generate the next available ID
-        book.setId(nextId);
-        books.add(book);
-        writeListToXml(books);
-    }
+        String query = "INSERT INTO books (ten_book, loai_book, gia_thanh, so_luong, ma_so, nha_xuat_ban, tac_gia) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    public void edit(Book book) {
-        ObservableList<Book> books = getListBooks();
-        for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId() == book.getId()) {
-                books.set(i, book);
-                writeListToXml(books);
-                return;
-            }
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, book.getTenBook());
+            preparedStatement.setString(2, book.getLoaiBook());
+            preparedStatement.setDouble(3, book.getGiaThanh());
+            preparedStatement.setInt(4, book.getSoLuong());
+            preparedStatement.setString(5, book.getMaSo());
+            preparedStatement.setString(6, book.getNhaXuatBan());
+            preparedStatement.setString(7, book.getTacGia());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public boolean delete(int id) {
-        ObservableList<Book> books = getListBooks();
-        boolean removed = books.removeIf(book -> book.getId() == id);
+    // Sửa thông tin sách trong cơ sở dữ liệu
+    public void edit(Book book) {
+        String query = "UPDATE books SET ten_book = ?, loai_book = ?, gia_thanh = ?, so_luong = ?, ma_so = ?, nha_xuat_ban = ?, tac_gia = ? WHERE id = ?";
 
-        if (removed) {
-            // Update IDs after deletion
-            for (int i = 0; i < books.size(); i++) {
-                books.get(i).setId(i + 1); // IDs start from 1
-            }
-            writeListToXml(books);
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, book.getTenBook());
+            preparedStatement.setString(2, book.getLoaiBook());
+            preparedStatement.setDouble(3, book.getGiaThanh());
+            preparedStatement.setInt(4, book.getSoLuong());
+            preparedStatement.setString(5, book.getMaSo());
+            preparedStatement.setString(6, book.getNhaXuatBan());
+            preparedStatement.setString(7, book.getTacGia());
+            preparedStatement.setInt(8, book.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Xóa một sách khỏi cơ sở dữ liệu
+    public boolean delete(int id) {
+        String query = "DELETE FROM books WHERE id = ?";
+        boolean removed = false;
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+            removed = rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return removed;
     }
 
-    private void writeListToXml(ObservableList<Book> books) {
-        try {
-            File xmlFile = new File(FILE_PATH);
-            JAXBContext jaxbContext = JAXBContext.newInstance(BookXML.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    // Lấy một sách theo ID
+    public Book getBookById(int id) {
+        String query = "SELECT * FROM books WHERE id = ?";
+        Book book = null;
 
-            BookXML bookList = new BookXML();
-            bookList.setBooks(new ArrayList<>(books)); // Convert ObservableList to ArrayList
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            jaxbMarshaller.marshal(bookList, xmlFile);
-        } catch (Exception e) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                book = new Book();
+                book.setId(resultSet.getInt("id"));
+                book.setTenBook(resultSet.getString("ten_book"));
+                book.setLoaiBook(resultSet.getString("loai_book"));
+                book.setGiaThanh(resultSet.getDouble("gia_thanh"));
+                book.setSoLuong(resultSet.getInt("so_luong"));
+                book.setMaSo(resultSet.getString("ma_so"));
+                book.setNhaXuatBan(resultSet.getString("nha_xuat_ban"));
+                book.setTacGia(resultSet.getString("tac_gia"));
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
-    private int generateNextId(ObservableList<Book> books) {
-        int maxId = 0;
-        for (Book book : books) {
-            if (book.getId() > maxId) {
-                maxId = book.getId();
-            }
-        }
-        return maxId + 1; // Return the next available ID
+        return book;
     }
 }

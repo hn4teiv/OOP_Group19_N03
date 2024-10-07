@@ -7,6 +7,7 @@ import com.mycompany.managelibrary.entity.Book;
 import com.mycompany.managelibrary.view.BookView;
 import com.mycompany.managelibrary.view.LoanReturnView;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -33,12 +34,11 @@ public class BookController {
         bookView.addAddBookListener(event -> addBook());
         bookView.addEditBookListener(event -> editBook());
         bookView.addDeleteBookListener(event -> deleteBook());
-        // Đảm bảo addSwitchToLoanReturnViewListener được gọi đúng
         bookView.addSwitchToLoanReturnViewListener(event -> switchToLoanReturnView());
     }
 
     public void showBookView() {
-        List<Book> bookList = bookDao.getListBooks();
+        ObservableList<Book> bookList = bookDao.getListBooks();
         bookView.showListBook(bookList);
         stage.show(); // Hiển thị cửa sổ BookView
     }
@@ -76,13 +76,12 @@ public class BookController {
     }
 
     private void updateBookList(String successMessage) {
-        List<Book> updatedList = bookDao.getListBooks();
+        ObservableList<Book> updatedList = bookDao.getListBooks();
         bookView.showListBook(updatedList);
         bookView.clearBookInfo();
         bookView.showMessage(successMessage);
     }
 
-    // Chuyển đổi sang LoanReturnView
     // Chuyển đổi sang LoanReturnView
     public void switchToLoanReturnView() {
         // Tạo cửa sổ LoanReturnView mới
@@ -97,7 +96,4 @@ public class BookController {
         // Ẩn cửa sổ BookView
         stage.hide(); // Ẩn BookView
     }
-
-
-
 }
