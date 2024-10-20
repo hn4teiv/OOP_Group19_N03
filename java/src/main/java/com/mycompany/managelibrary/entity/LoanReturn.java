@@ -1,15 +1,17 @@
 package com.mycompany.managelibrary.entity;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
+
 
 public class LoanReturn {
-    private SimpleIntegerProperty id;
-    private SimpleStringProperty diaChi;
-    private SimpleStringProperty ten;
-    private SimpleStringProperty lop;
-    private SimpleStringProperty tenSach;
-    private SimpleStringProperty trangThai;
+    private final IntegerProperty id;
+    private final StringProperty diaChi;
+    private final StringProperty ten;
+    private final StringProperty lop;
+    private final StringProperty tenSach;
+    private final StringProperty trangThai;
 
     public LoanReturn() {
         this.id = new SimpleIntegerProperty();
@@ -20,7 +22,6 @@ public class LoanReturn {
         this.trangThai = new SimpleStringProperty();
     }
 
-    // Getter và Setter cho các thuộc tính
     public int getId() {
         return id.get();
     }
@@ -29,7 +30,7 @@ public class LoanReturn {
         this.id.set(id);
     }
 
-    public SimpleIntegerProperty idProperty() {
+    public IntegerProperty idProperty() {
         return id;
     }
 
@@ -41,7 +42,7 @@ public class LoanReturn {
         this.diaChi.set(diaChi);
     }
 
-    public SimpleStringProperty diaChiProperty() {
+    public StringProperty diaChiProperty() {
         return diaChi;
     }
 
@@ -53,7 +54,7 @@ public class LoanReturn {
         this.ten.set(ten);
     }
 
-    public SimpleStringProperty tenProperty() {
+    public StringProperty tenProperty() {
         return ten;
     }
 
@@ -65,7 +66,7 @@ public class LoanReturn {
         this.lop.set(lop);
     }
 
-    public SimpleStringProperty lopProperty() {
+    public StringProperty lopProperty() {
         return lop;
     }
 
@@ -77,7 +78,7 @@ public class LoanReturn {
         this.tenSach.set(tenSach);
     }
 
-    public SimpleStringProperty tenSachProperty() {
+    public StringProperty tenSachProperty() {
         return tenSach;
     }
 
@@ -89,7 +90,7 @@ public class LoanReturn {
         this.trangThai.set(trangThai);
     }
 
-    public SimpleStringProperty trangThaiProperty() {
+    public StringProperty trangThaiProperty() {
         return trangThai;
     }
 }

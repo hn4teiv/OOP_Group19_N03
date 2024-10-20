@@ -1,33 +1,30 @@
 package com.mycompany.managelibrary.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import com.mycompany.managelibrary.entity.LoanReturn;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class LoanReturnDao {
-    // Thông tin kết nối cơ sở dữ liệu
+
+    private static final Logger LOGGER = Logger.getLogger(LoanReturnDao.class.getName());
+
+    // Database connection info
     private static final String URL = "jdbc:postgresql://pg-28f387a6-oopjava19.i.aivencloud.com:24516/users?sslmode=require";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_la0WoxjlMLCV0uId8ze";
 
-    // Lấy kết nối đến cơ sở dữ liệu
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
-
-    // Lấy danh sách tất cả các loan returns từ cơ sở dữ liệu
-    public ObservableList<LoanReturn> getListLoanReturns() throws SQLException {
+    // Fetch list of all loan returns
+    public ObservableList<LoanReturn> getListLoanReturns() {
         ObservableList<LoanReturn> loanReturns = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM loan_return";
+        String query = "SELECT * FROM loan_return"; // Tên bảng đã chỉnh sửa
 
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
                 LoanReturn loanReturn = new LoanReturn();
@@ -39,63 +36,109 @@ public class LoanReturnDao {
                 loanReturn.setTrangThai(resultSet.getString("trang_thai"));
                 loanReturns.add(loanReturn);
             }
+
         } catch (SQLException e) {
-            System.err.println("Lỗi khi lấy danh sách loan returns: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error fetching loan returns", e);
         }
 
         return loanReturns;
     }
 
-    // Thêm một loan return mới
-    public void addLoanReturn(LoanReturn loanReturn) throws SQLException {
-        String sql = "INSERT INTO loan_return (dia_chi, ten, lop, ten_sach, trang_thai) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, loanReturn.getDiaChi());
-            pstmt.setString(2, loanReturn.getTen());
-            pstmt.setString(3, loanReturn.getLop());
-            pstmt.setString(4, loanReturn.getTenSach());
-            pstmt.setString(5, loanReturn.getTrangThai());
-            pstmt.executeUpdate();
-            System.out.println("Thêm thành công LoanReturn: " + loanReturn);
+    // Add a new loan return to the database
+    public void add(LoanReturn loanReturn) {
+
+        String query = "INSERT INTO loan_return (dia_chi, ten, lop, ten_sach, trang_thai) VALUES (?, ?, ?, ?, ?)"; // Tên bảng đã chỉnh sửa
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, loanReturn.getDiaChi());
+            preparedStatement.setString(2, loanReturn.getTen());
+            preparedStatement.setString(3, loanReturn.getLop());
+            preparedStatement.setString(4, loanReturn.getTenSach());
+            preparedStatement.setString(5, loanReturn.getTrangThai());
+
+            preparedStatement.executeUpdate();
+            System.out.println("Thêm mượn trả thành công: " + loanReturn); // Thông báo thêm thành công
         } catch (SQLException e) {
-            System.err.println("Lỗi khi thêm loan return: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error adding loan return", e);
+            System.out.println("Lỗi khi thêm mượn trả: " + e.getMessage()); // Thông báo lỗi
         }
     }
 
-    // Cập nhật một loan return
-    public boolean updateLoanReturn(LoanReturn loanReturn) throws SQLException {
-        String sql = "UPDATE loan_return SET dia_chi = ?, ten = ?, lop = ?, ten_sach = ?, trang_thai = ? WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, loanReturn.getDiaChi());
-            pstmt.setString(2, loanReturn.getTen());
-            pstmt.setString(3, loanReturn.getLop());
-            pstmt.setString(4, loanReturn.getTenSach());
-            pstmt.setString(5, loanReturn.getTrangThai());
-            pstmt.setInt(6, loanReturn.getId());
-            int rowsAffected = pstmt.executeUpdate();
-            System.out.println("Số dòng bị ảnh hưởng khi cập nhật: " + rowsAffected);
-            return rowsAffected > 0;
+    // Edit loan return information
+    public void edit(LoanReturn loanReturn) {
+        String query = "UPDATE loan_return SET dia_chi = ?, ten = ?, lop = ?, ten_sach = ?, trang_thai = ? WHERE id = ?"; // Tên bảng đã chỉnh sửa
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, loanReturn.getDiaChi());
+            preparedStatement.setString(2, loanReturn.getTen());
+            preparedStatement.setString(3, loanReturn.getLop());
+            preparedStatement.setString(4, loanReturn.getTenSach());
+            preparedStatement.setString(5, loanReturn.getTrangThai());
+            preparedStatement.setInt(6, loanReturn.getId());
+
+            preparedStatement.executeUpdate();
+            System.out.println("Cập nhật mượn trả thành công: " + loanReturn); // Thông báo cập nhật thành công
         } catch (SQLException e) {
-            System.err.println("Lỗi khi cập nhật loan return: " + e.getMessage());
-            return false;
+            LOGGER.log(Level.SEVERE, "Error editing loan return", e);
+            System.out.println("Lỗi khi cập nhật mượn trả: " + e.getMessage()); // Thông báo lỗi
         }
     }
 
-    // Xóa một loan return
-    public boolean deleteLoanReturn(int id) throws SQLException {
-        String sql = "DELETE FROM loan_return WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            int rowsAffected = pstmt.executeUpdate();
-            System.out.println("Số dòng bị ảnh hưởng khi xóa: " + rowsAffected);
-            return rowsAffected > 0;
+    // Delete a loan return by ID
+    public boolean delete(int id) {
+        String query = "DELETE FROM loan_return WHERE id = ?"; // Tên bảng đã chỉnh sửa
+        boolean removed = false;
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+            removed = rowsAffected > 0;
+
+            if (removed) {
+                System.out.println("Xóa mượn trả thành công với ID: " + id); // Thông báo xóa thành công
+            } else {
+                System.out.println("Không tìm thấy mượn trả với ID: " + id); // Thông báo không tìm thấy
+            }
+
         } catch (SQLException e) {
-            System.err.println("Lỗi khi xóa loan return: " + e.getMessage());
-            return false;
+            LOGGER.log(Level.SEVERE, "Error deleting loan return", e);
+            System.out.println("Lỗi khi xóa mượn trả: " + e.getMessage()); // Thông báo lỗi
         }
+
+        return removed;
     }
 
+    // Get a loan return by its ID
+    public LoanReturn getLoanReturnById(int id) {
+        String query = "SELECT * FROM loan_return WHERE id = ?"; // Tên bảng đã chỉnh sửa
+        LoanReturn loanReturn = null;
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                loanReturn = new LoanReturn();
+                loanReturn.setId(resultSet.getInt("id"));
+                loanReturn.setDiaChi(resultSet.getString("dia_chi"));
+                loanReturn.setTen(resultSet.getString("ten"));
+                loanReturn.setLop(resultSet.getString("lop"));
+                loanReturn.setTenSach(resultSet.getString("ten_sach"));
+                loanReturn.setTrangThai(resultSet.getString("trang_thai"));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching loan return by ID", e);
+        }
+
+        return loanReturn;
+    }
 }
