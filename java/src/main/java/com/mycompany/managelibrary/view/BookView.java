@@ -19,7 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -72,6 +71,16 @@ public class BookView extends Application {
 
         switchToLoanReturnViewBtn = new Button("Chuyển đến Quản lý Mượn Trả");
         switchToLoanReturnViewBtn.setOnAction(e -> switchToLoanReturnView());
+
+        // Thêm sự kiện chọn hàng trong bảng
+        bookTable.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+                if (selectedBook != null) {
+                    loadBookData(selectedBook);
+                }
+            }
+        });
     }
 
     private void setupTable() {
@@ -103,7 +112,7 @@ public class BookView extends Application {
         bookTable.setItems(bookList);
     }
 
-    private VBox createLayout() {
+    public VBox createLayout() {
         GridPane formPanel = new GridPane();
         formPanel.setHgap(10);
         formPanel.setVgap(10);
@@ -132,13 +141,11 @@ public class BookView extends Application {
         return new VBox(layout);
     }
 
-    // Hiển thị danh sách sách từ BookDao
     public void showListBook(List<Book> books) {
         bookList.clear();
         bookList.addAll(books);
     }
 
-    // Xóa thông tin sách sau khi thao tác
     public void clearBookInfo() {
         tenBookField.clear();
         loaiBookField.clear();
@@ -147,6 +154,16 @@ public class BookView extends Application {
         maSoField.clear();
         nhaXuatBanField.clear();
         tacGiaField.clear();
+    }
+
+    private void loadBookData(Book book) {
+        tenBookField.setText(book.getTenBook());
+        loaiBookField.setText(book.getLoaiBook());
+        giaThanhField.setText(String.valueOf(book.getGiaThanh()));
+        soLuongField.setText(String.valueOf(book.getSoLuong()));
+        maSoField.setText(book.getMaSo());
+        nhaXuatBanField.setText(book.getNhaXuatBan());
+        tacGiaField.setText(book.getTacGia());
     }
 
     private void addBook() {
@@ -196,21 +213,27 @@ public class BookView extends Application {
             }
         }
     }
+    public void updateBookQuantity(String bookName, int change) {
+        for (Book book : bookList) {
+            if (book.getTenBook().equals(bookName)) {
+                book.setSoLuong(book.getSoLuong() + change);
+                break;
+            }
+        }
+        bookTable.refresh(); // Cập nhật lại bảng để hiển thị số lượng mới
+    }
+
 
     public Book getBookInfo() throws NumberFormatException {
         Book book = new Book();
         book.setTenBook(tenBookField.getText());
         book.setLoaiBook(loaiBookField.getText());
-        book.setGiaThanh(Double.parseDouble(giaThanhField.getText())); // Chuyển đổi từ chuỗi sang số
-        book.setSoLuong(Integer.parseInt(soLuongField.getText())); // Chuyển đổi từ chuỗi sang số
+        book.setGiaThanh(Double.parseDouble(giaThanhField.getText()));
+        book.setSoLuong(Integer.parseInt(soLuongField.getText()));
         book.setMaSo(maSoField.getText());
         book.setNhaXuatBan(nhaXuatBanField.getText());
         book.setTacGia(tacGiaField.getText());
         return book;
-    }
-    public Pane getLayout() {
-        // Trả về layout hiện tại của BookView
-        return getLayout(); // Thay 'yourLayout' bằng tên biến layout thực tế của bạn
     }
 
     public void showMessage(String message) {
@@ -230,20 +253,19 @@ public class BookView extends Application {
     public void addDeleteBookListener(EventHandler<ActionEvent> handler) {
         deleteBookBtn.setOnAction(handler);
     }
-    public void addSwitchToLoanReturnViewListener(EventHandler<ActionEvent> handler) {
-        switchToLoanReturnViewBtn.setOnAction(handler);
+    public void addSwitchToLoanReturnViewListener(EventHandler<ActionEvent> handler) { switchToLoanReturnViewBtn.setOnAction(handler);
     }
 
     // Chuyển sang giao diện LoanReturnView
     private void switchToLoanReturnView() {
-        LoanReturnView loanReturnView = new LoanReturnView();
-        Scene loanReturnScene = new Scene(loanReturnView.getView(), 800, 600);
-
-        // Lấy Stage hiện tại từ nút chuyển
         Stage currentStage = (Stage) switchToLoanReturnViewBtn.getScene().getWindow();
-        currentStage.setScene(loanReturnScene);
+        LoanReturnView loanReturnView = new LoanReturnView();
+        try {
+            loanReturnView.start(currentStage);
+        } catch (Exception e) {
+            showMessage("Lỗi khi chuyển sang giao diện LoanReturn: " + e.getMessage());
+        }
     }
-
 
     public static void main(String[] args) {
         launch(args);
