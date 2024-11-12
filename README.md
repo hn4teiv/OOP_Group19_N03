@@ -18,6 +18,10 @@ Mục tiêu chính của dự án là:
 
 Dự án này hướng đến việc phát triển một giải pháp toàn diện cho các thư viện, từ thư viện trường học đến thư viện công cộng.
 
+### Demo dự án
+
+[Demo dự án](https://www.youtube.com/watch?v=6aky54z9Sjc)
+
 ## UML Dự án 
 
 # 1.1 UML Structural Diagram
